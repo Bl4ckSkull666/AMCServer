@@ -1,6 +1,5 @@
 package de.papaharni.amcserver.commands;
 
-import net.minecraft.server.v1_6_R3.Material;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -48,16 +47,17 @@ public class tpplayer implements CommandExecutor {
                 return true;
             }
             
-            int x = Integer.parseInt(args[3]);
-            int y = Integer.parseInt(args[4]);
-            int z = Integer.parseInt(args[5]);
-            for(int i = z; i <= 254; i++) {
-                Block b1 = w.getBlockAt(x, y, i);
-                Block b2 = w.getBlockAt(x, y, i+1);
-                if(b1.getType().equals(Material.AIR) && b2.getType().equals(Material.AIR)) {
-                    Location loc = new Location(w, x, y, i);
+            int x = Integer.parseInt(args[2]);
+            int y = Integer.parseInt(args[3]);
+            int z = Integer.parseInt(args[4]);
+            for(int i = y; i <= 254; i++) {
+                Block b1 = w.getBlockAt(x, i, z);
+                Block b2 = w.getBlockAt(x, i+1, z);
+                if(b1.isEmpty() && b2.isEmpty()) {
+                    Location loc = new Location(w, x, i, z);
                     pl.teleport(loc);
-                    sender.sendMessage("Spieler " + pl.getName() + " nach Welt:" + w.getName() + " - X:" + x + " - Y:" + y + " - Z:" + i);
+                    pl.sendMessage("Du wurdest von " + sender.getName() + " Teleportiert.");
+                    sender.sendMessage("Spieler " + pl.getName() + " nach Welt:" + w.getName() + " - X:" + x + " - Y:" + i + " - Z:" + z + " teleportiert.");
                     return true;
                 }
             }

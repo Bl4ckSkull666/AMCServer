@@ -40,8 +40,10 @@ public class nachtsicht implements CommandExecutor {
         
         if(p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+            p.sendMessage("Nachtsicht Effekt wurde deaktiviert.");
         } else {
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0));
+            p.sendMessage("Nachtsicht Effekt wurde aktiviert.");
         }
         return true;
     }

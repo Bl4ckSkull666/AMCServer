@@ -40,8 +40,10 @@ public class unsichtbar implements CommandExecutor {
         
         if(p.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
             p.removePotionEffect(PotionEffectType.INVISIBILITY);
+            p.sendMessage("Du bist nun wieder für jeden Sichtbar.");
         } else {
             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0));
+            p.sendMessage("Du bist nun Unsichtbar.");
         }
         return true;
     }

@@ -52,7 +52,7 @@ public class run implements CommandExecutor {
             return true;
         }
 
-        Float f = Float.intBitsToFloat((spd/10));
+        float f = ((float)spd/10);
         p.setFlySpeed(f);
         p.setWalkSpeed(f);
         p.sendMessage("Du Rennst und Fliegst nun mit Geschwindigkeits Stufe " + args[0]);
