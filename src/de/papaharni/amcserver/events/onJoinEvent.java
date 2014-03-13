@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.papaharni.amcserver.events;
 
 import de.papaharni.amcserver.AMCServer;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -23,8 +19,13 @@ public class onJoinEvent implements Listener {
         _plugin = plugin;
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(event.getPlayer().getName() + " ist dem Server beigetreten.");
+    }
+    
+    @EventHandler
+    public void onInvOpen(InventoryOpenEvent event) {
+        
     }
 }

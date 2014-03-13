@@ -3,18 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.papaharni.amcserver.database;
 
-import de.papaharni.amcserver.AMCServer;
+package de.papaharni.amcserver.database;
 
 /**
  *
  * @author Pappi
  */
-public class mySql {
-    private final AMCServer _plugin;
+public class pvpRewards {
     
-    public mySql(AMCServer plugin) {
-        _plugin = plugin;
-    }
 }
