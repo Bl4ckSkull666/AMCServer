@@ -1,0 +1,19 @@
+name: AMCServer
+version: 0.1
+author: PapaHarni
+main: de.papaharni.amcserver.AMCServer
+
+commands:
+  tpplayer:
+    description: Erlaubt es Fremde Spieler zu bestimmnten Welten und Koordinaten zu teleportieren.
+    usage: /tpplayer {playername} {welt} {x} {y} {z}
+  run:
+    description: Erhoeht und verringert die Lauf und Fluggeschwindigkeit.
+    usage: /run {eine Nummer zwischen 1 und 10}
+  nachtsicht:
+    description: Schaltet den Nachtsicht Modus ein/aus.
+    usage: /nachtsicht
+  unsichtbar:
+    description: Macht dich Unsichtbar oder auch wieder Sichtbar.
+    usage: /unsichtbar
+    
