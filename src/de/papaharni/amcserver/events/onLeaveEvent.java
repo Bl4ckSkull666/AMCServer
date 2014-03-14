@@ -19,6 +19,6 @@ public class onLeaveEvent implements Listener {
     
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        event.setQuitMessage(event.getPlayer().getName() + " hat den Server verlassen.");
+        event.setQuitMessage(_plugin.getMyConfig()._leaveMessage.replaceAll("%player%", event.getPlayer().getName()));
     }
 }

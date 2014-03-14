@@ -4,7 +4,6 @@ import de.papaharni.amcserver.AMCServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -21,11 +20,6 @@ public class onJoinEvent implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.setJoinMessage(event.getPlayer().getName() + " ist dem Server beigetreten.");
-    }
-    
-    @EventHandler
-    public void onInvOpen(InventoryOpenEvent event) {
-        
+        event.setJoinMessage(_plugin.getMyConfig()._joinMessage.replaceAll("%player%", event.getPlayer().getName()));
     }
 }

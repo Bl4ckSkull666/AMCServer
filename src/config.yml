@@ -1,4 +1,25 @@
 debug: true
+join: '&2%player% ist zu uns gestossen.'
+leave: '&c%player% hat uns verlassen.'
+mysql:
+  server:
+    host: '127.0.0.1'
+    port: '3306'
+    user: 'root'
+    pass: 'root'
+    data: 'server'
+  forum:
+    host: '127.0.0.1'
+    port: '3306'
+    user: 'root'
+    pass: 'root'
+    data: 'forum'
+  homepage:
+    host: '127.0.0.1'
+    port: '3306'
+    user: 'root'
+    pass: 'root'
+    data: 'homepage'
 protect:
   onuse:
     use: true

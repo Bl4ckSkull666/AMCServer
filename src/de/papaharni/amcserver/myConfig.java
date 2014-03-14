@@ -22,6 +22,15 @@ public class myConfig {
     
     private final AMCServer _plugin;
     public final boolean debug;
+    public String _joinMessage;
+    public String _leaveMessage;
+    
+    //MySQL - Server
+    
+    //MySQL - Forum
+    
+    //MySQL - Homepage
+    
     
     //Protections
     public boolean _protect_onuse_use;
@@ -45,10 +54,12 @@ public class myConfig {
     //Messages
     
     
-    public myConfig(Configuration config, AMCServer plugin)
-    {
+    public myConfig(Configuration config, AMCServer plugin) {
         _plugin = plugin;
         this.debug = config.getBoolean("debug", false);
+        
+        _joinMessage = ChatColor.translateAlternateColorCodes('&',config.getString("join", "&2%player% ist zu uns gestossen."));
+        _leaveMessage = ChatColor.translateAlternateColorCodes('&',config.getString("leave", "&c%player% hat uns verlassen."));
         
         //Protection Furnace/Brewer on use
         _protect_onuse_use = config.getBoolean("protect.onuse.use", false);
