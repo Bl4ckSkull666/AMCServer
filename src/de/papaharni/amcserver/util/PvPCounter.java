@@ -1,5 +1,7 @@
 package de.papaharni.amcserver.util;
 
+import de.papaharni.amcserver.AMCServer;
+
 /**
  *
  * @author Pappi
@@ -9,7 +11,7 @@ public class PvPCounter
 
     public PvPCounter(String uname)
     {
-        int playerData[] = PvPRewards.getInstance().getMySQL().getPlayerData(uname);
+        int playerData[] = AMCServer.getInstance().getMySQL().getPlayerData(uname);
         if(playerData[0] > -1 && playerData[1] > -1)
         {
             userName = uname;

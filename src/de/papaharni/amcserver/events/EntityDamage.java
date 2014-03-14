@@ -4,6 +4,7 @@ import de.papaharni.amcserver.AMCServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 /**
  *
@@ -20,7 +21,7 @@ public class EntityDamage implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event)
     {
-        if(plugin.getMyConfigConf().protected_entity_use && plugin.getMyConfigConf().protected_entity_types.contains(event.getEntityType()) && (event.getCause().equals(org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE) || event.getCause().equals(org.bukkit.event.entity.EntityDamageEvent.DamageCause.FIRE_TICK) || event.getCause().equals(org.bukkit.event.entity.EntityDamageEvent.DamageCause.LIGHTNING)))
+        if(_plugin.getMyConfig()._protect_entity_use && _plugin.getMyConfig()._protect_entity_list.contains(event.getEntityType()) && (event.getCause().equals(DamageCause.FIRE) || event.getCause().equals(DamageCause.FIRE_TICK) || event.getCause().equals(DamageCause.LIGHTNING)))
             event.setCancelled(true);
     }
 }

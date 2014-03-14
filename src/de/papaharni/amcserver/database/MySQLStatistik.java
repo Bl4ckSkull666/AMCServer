@@ -10,6 +10,6 @@ package de.papaharni.amcserver.database;
  *
  * @author Pappi
  */
-public class pvpRewards {
+public class MySQLStatistik {
     
 }

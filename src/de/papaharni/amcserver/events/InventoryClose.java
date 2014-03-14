@@ -22,30 +22,25 @@ public class InventoryClose implements Listener {
     }
     
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event)
-    {
-        if(event.getPlayer() instanceof Player)
-        {
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if(event.getPlayer() instanceof Player  && _plugin.getMyConfig()._protect_onuse_use) {
             Player player = (Player)event.getPlayer();
             Inventory inv = event.getInventory();
-            if(inv instanceof FurnaceInventory)
-            {
+            if(inv instanceof FurnaceInventory) {
                 FurnaceInventory finv = (FurnaceInventory)inv;
-                if(plugin.isBlock(finv.getHolder().getLocation()))
-                {
-                    plugin.delBlock(finv.getHolder().getLocation());
-                    player.sendMessage((new StringBuilder()).append(plugin.getMyConfigConf().pluginPrefix).append(plugin.getMyConfigConf().furnace_unsaved).toString());
+                if(_plugin.getProtect().isBlock(finv.getHolder().getLocation())) {
+                    _plugin.getProtect().delBlock(finv.getHolder().getLocation());
+                    player.sendMessage(_plugin.getMyConfig()._protect_onuse_furnace_free);
                 }
             }
-            if(inv instanceof BrewerInventory)
-            {
+            if(inv instanceof BrewerInventory) {
                 BrewerInventory binv = (BrewerInventory)inv;
-                if(plugin.isBlock(binv.getHolder().getLocation()))
-                {
-                    plugin.delBlock(binv.getHolder().getLocation());
-                    player.sendMessage((new StringBuilder()).append(plugin.getMyConfigConf().pluginPrefix).append(plugin.getMyConfigConf().brewer_unsaved).toString());
+                if(_plugin.getProtect().isBlock(binv.getHolder().getLocation())) {
+                    _plugin.getProtect().delBlock(binv.getHolder().getLocation());
+                    player.sendMessage(_plugin.getMyConfig()._protect_onuse_brewer_free);
                 }
             }
         }
+    }
     
 }

@@ -1,0 +1,26 @@
+debug: true
+protect:
+  onuse:
+    use: true
+    worlds:
+      - PVPWelt
+    furnace:
+      use: true
+      useable: '&2Der Ofen ist nun wieder Freigegeben.'
+      protected: '&cDer Ofen ist nun gesichert vor Fremd Benutzung.'
+      inuse: '&cDer Ofen ist bereits in verwendung von einer anderen Person.'
+    brewer:
+      use: true
+      useable: '&2Der Braustand ist nun wieder Freigegeben.'
+      protected: '&cDer Braustand ist nun gesichert vor Fremd Benutzung.'
+      inuse: '&cDer Braustand ist bereits in verwendung von einer anderen Person.'
+  entity:
+    use: true
+    list:
+      - Villager
+      - Irongolem
+    worlds:
+      - PvPWelt
+    msg: '&cEs ist dir nicht erlaubt %entity% anzugreifen.'
+    lightning: true
+    lightning_dmg_chance: 50

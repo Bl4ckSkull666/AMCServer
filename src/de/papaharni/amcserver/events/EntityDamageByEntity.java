@@ -24,42 +24,39 @@ public class EntityDamageByEntity implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
-        if(plugin.getMyConfigConf().protected_entity_use && plugin.getMyConfigConf().protected_entity_types.contains(event.getEntityType()))
-        {
-            boolean cantAttack = true;
-            if(event.getDamager().getType().equals(EntityType.PLAYER))
-            {
-                Player arr$[] = plugin.getServer().getOnlinePlayers();
-                int len$ = arr$.length;
-                int i$ = 0;
-                do
-                {
-                    if(i$ >= len$)
-                        break;
-                    Player player = arr$[i$];
-                    if(player.getEntityId() == event.getDamager().getEntityId())
-                    {
-                        if((player.isOp() || player.hasPermission("pvprew.entity.bypass") || player.hasPermission("pvprew.*")) && player.isSneaking())
-                            cantAttack = false;
-                        else
-                            player.sendMessage(plugin.getMyConfigConf().protected_entity_message.replaceAll("%entity%", event.getEntityType().name()));
-                        break;
-                    }
-                    i$++;
-                } while(true);
-            }
-            if(cantAttack)
-            {
-                if(plugin.getMyConfigConf().protected_entity_use_lightning)
-                {
-                    Location loc = event.getDamager().getLocation();
-                    if(Rnd.get(1, 99) < plugin.getMyConfigConf().protected_entity_dmg_lightning && event.getDamager().getType().equals(EntityType.PLAYER))
-                        plugin.getServer().getWorld(loc.getWorld().getName()).strikeLightning(loc);
-                    else
-                    if(event.getDamager().getType().equals(EntityType.PLAYER))
-                        plugin.getServer().getWorld(loc.getWorld().getName()).strikeLightningEffect(loc);
+        if(!_plugin.getMyConfig()._protect_entity_use)
+            return;
+        if(!_plugin.getMyConfig()._protect_entity_list.contains(event.getEntityType()))
+            return;
+        if(!_plugin.getMyConfig()._protect_entity_world.contains(event.getEntity().getLocation().getWorld().getName()))
+            return;
+        
+        boolean cantAttack = true;
+        if(event.getDamager().getType().equals(EntityType.PLAYER)) {
+            Player p = null;
+            for(Player pl: _plugin.getServer().getOnlinePlayers()) {
+                if(pl.getEntityId() == event.getDamager().getEntityId()) {
+                    p = pl;
+                    break;
                 }
-                event.setCancelled(true);
+            }
+            
+            if(p == null)
+                return;
+            
+            if((p.isOp() || p.hasPermission("amcserver.pvprew.entity.bypass") || p.hasPermission("amcserver.pvprew.*")) && p.isSneaking())
+                return;
+            
+            p.sendMessage(_plugin.getMyConfig()._protect_entity_message.replaceAll("%entity%", event.getEntityType().name()));
+            
+            if(_plugin.getMyConfig()._protect_entity_lightning) {
+                Location loc = event.getDamager().getLocation();
+                if(Rnd.get(1, 99) < _plugin.getMyConfig()._protect_entity_lightning_dmg && event.getDamager().getType().equals(EntityType.PLAYER))
+                    _plugin.getServer().getWorld(loc.getWorld().getName()).strikeLightning(loc);
+                else {
+                    if(event.getDamager().getType().equals(EntityType.PLAYER))
+                        _plugin.getServer().getWorld(loc.getWorld().getName()).strikeLightningEffect(loc);
+                }
             }
         }
     }

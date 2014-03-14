@@ -24,10 +24,10 @@ public class AMCServer extends JavaPlugin {
     private static AMCServer _instance;
     private static boolean _debugMode;
     private static myConfig _config;
-    private static Logger _log;
+    private protection _protect;
+    private logging _logger;
     
     private List<Location> saveBlocks = new ArrayList<>();
-    private Map<String, PvPCounter> pvpcounts = new HashMap<>();
     
     public static AMCServer getInstance() {
         return _instance;
@@ -48,9 +48,16 @@ public class AMCServer extends JavaPlugin {
         this.saveConfig();
         _debugMode = _config.debug;
         
+        _protect = new protection(this);
+        _logger = new logging(this, _config.debug);
+        
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new onJoinEvent(this), this);
         pm.registerEvents(new onLeaveEvent(this), this);
+        pm.registerEvents(new InventoryOpen(this), this);
+        pm.registerEvents(new InventoryClose(this), this);
+        pm.registerEvents(new EntityDamage(this), this);
+        pm.registerEvents(new EntityDamageByEntity(this), this);
         
         this.getCommand("tpplayer").setExecutor(new tpplayer());
         this.getCommand("run").setExecutor(new run());
@@ -63,108 +70,15 @@ public class AMCServer extends JavaPlugin {
         
     }
     
-    public static void log(String msg)
-    {
-        _log.log(Level.INFO, msg);
-    }
-
-    public static void error(String msg)
-    {
-        _log.log(Level.SEVERE, msg);
-    }
-
-    public static void error(String msg, Throwable t)
-    {
-        _log.log(Level.SEVERE, msg, t);
-    }
-
-    public static void debug(String msg)
-    {
-        if(_debugMode)
-            _log.log(Level.WARNING,"[debug] " + msg);
+    public myConfig getMyConfig() {
+        return _config;
     }
     
-    public void addPvPWin(String uname)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.addWin();
-        setPvPCounter(uname, yours);
-    }
-
-    public void delPvPWin(String uname)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.setWins(yours.getWins() - 1);
-        setPvPCounter(uname, yours);
-    }
-
-    public void setPvPWins(String uname, int winTotal)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.addWins(winTotal);
-        setPvPCounter(uname, yours);
-    }
-
-    public void addPvPLose(String uname)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.addLose();
-        setPvPCounter(uname, yours);
-    }
-
-    public void delPvPLose(String uname)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.setLose(yours.getLose() - 1);
-        setPvPCounter(uname, yours);
-    }
-
-    public void setPvPLoses(String uname, int winTotal)
-    {
-        PvPCounter yours = getPvPCounter(uname);
-        yours.addLoses(winTotal);
-        setPvPCounter(uname, yours);
+    public protection getProtect() {
+        return _protect;
     }
     
-    public boolean isPvPCounter(String uname)
-    {
-        return pvpcounts.containsKey(uname);
-    }
-
-    public PvPCounter getPvPCounter(String uname)
-    {
-        if(isPvPCounter(uname))
-            return pvpcounts.get(uname);
-        else
-            return null;
-    }
-
-    public void setPvPCounter(String uname, PvPCounter myCount)
-    {
-        pvpcounts.put(uname, myCount);
-    }
-
-    public void savePvPCounter()
-    {
-        java.util.Map.Entry e;
-        for(Iterator it = pvpcounts.entrySet().iterator(); it.hasNext(); database.savePlayerCount((String)e.getKey(), ((PvPCounter)e.getValue()).getWins(), ((PvPCounter)e.getValue()).getLose()))
-            e = (java.util.Map.Entry)it.next();
-
-    }
-
-    public void addBlock(Location loc)
-    {
-        saveBlocks.add(loc);
-    }
-
-    public boolean isBlock(Location block)
-    {
-        return saveBlocks.contains(block);
-    }
-
-    public void delBlock(Location loc)
-    {
-        if(saveBlocks.contains(loc))
-            saveBlocks.remove(loc);
+    public logging getLog() {
+        return _logger;
     }
 }
