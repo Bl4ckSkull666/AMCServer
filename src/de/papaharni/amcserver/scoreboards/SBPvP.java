@@ -6,10 +6,21 @@
 
 package de.papaharni.amcserver.scoreboards;
 
+import de.papaharni.amcserver.AMCServer;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author Pappi
  */
 public class SBPvP {
+    private AMCServer _plugin;
     
+    public SBPvP(AMCServer plugin) {
+        _plugin = plugin;
+    }
+    
+    public void setScoreboard(Player p) {
+        
+    }
 }

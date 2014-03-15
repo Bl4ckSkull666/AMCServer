@@ -1,7 +1,7 @@
 package de.papaharni.amcserver.events;
 
 import de.papaharni.amcserver.AMCServer;
-import de.papaharni.pvprewards.Rnd;
+import de.papaharni.amcserver.util.Rnd;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -44,7 +44,7 @@ public class EntityDamageByEntity implements Listener {
             if(p == null)
                 return;
             
-            if((p.isOp() || p.hasPermission("amcserver.pvprew.entity.bypass") || p.hasPermission("amcserver.pvprew.*")) && p.isSneaking())
+            if((p.isOp() || p.hasPermission("amcserver.pvprew.entity.bypass") && p.isSneaking() || p.hasPermission("amcserver.pvprew.*")) && p.isSneaking())
                 return;
             
             p.sendMessage(_plugin.getMyConfig()._protect_entity_message.replaceAll("%entity%", event.getEntityType().name()));

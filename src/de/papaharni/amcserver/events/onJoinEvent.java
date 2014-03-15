@@ -29,8 +29,7 @@ public class onJoinEvent implements Listener {
         event.setJoinMessage(_plugin.getMyConfig()._joinMessage.replaceAll("%player%", event.getPlayer().getName()));
         
         //Lade das passende ScoreBoard
-        if(_plugin.getMyConfig()._sbOnWorld.containsKey(event.getPlayer().getLocation().getWorld().getName().toLowerCase())) {
-            
-        }
+        _plugin.getSBMain().setVisible(event.getPlayer());
+        _plugin.getSBMain().setScoreboard(event.getPlayer());
     }
 }

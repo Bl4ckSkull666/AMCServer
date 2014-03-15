@@ -158,6 +158,33 @@ public class MySQLMain {
         }
     }
     
+    public void setupMcJobsStructure() {
+        if(!_plugin.getMyConfig()._tmysql.containsKey("mcjobs"))
+            return;
+        
+        Connection con = null;
+        try {
+            con = getConnect(_plugin.getMyConfig()._tmysql.get("mcjobs"));
+            if(con == null)
+                return;
+            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `mcjobs` (`username` varchar(32) NOT NULL, "
+                    + "`jobname` varchar(32) NOT NULL, "
+                    + "`level` int(11) NOT NULL, "
+                    + "`exp` bigint(13) NOT NULL, "
+                    + "`exp_up` bigint(13) NOT NULL, "
+                    + "`rank` varchar(32) DEFAULT NULL, "
+                    + "PRIMARY KEY (`username`,`jobname`,`level`)) "
+                    + "ENGINE=MyISAM DEFAULT CHARSET=latin1"
+            );
+            statement.execute();
+            statement.close();
+        } catch(SQLException e) {
+            
+        } finally {
+            close(con);
+        }
+    }
+    
     public String isPlayerNotActivatedYet(Player p) {
         if(!_plugin.getMyConfig()._tmysql.containsKey("authme_activation"))
             return "";
@@ -177,12 +204,39 @@ public class MySQLMain {
             }
             statement.close();
         } catch(SQLException e) {
-            _plugin.getLog().error("Konnte nicht feststellen on Account noch gesperrt ist.");
+            _plugin.getLog().error("Konnte nicht feststellen ob Account noch gesperrt ist.");
             close(con);
             return "";
         } finally {
             close(con);
             return msg;
+        }
+    }
+    
+    public void setupActivationStructure() {
+        if(!_plugin.getMyConfig()._tmysql.containsKey("authme_activation"))
+            return;
+        
+        Connection con = null;
+        try {
+            con = getConnect(_plugin.getMyConfig()._tmysql.get("authme_activation"));
+            if(con == null)
+                return;
+            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `authMe_activation` (" 
+                + "  `id` int(11) NOT NULL,"
+                + "  `name` varchar(32) NOT NULL,"
+                + "  `activation` varchar(64) NOT NULL,"
+                + "  `status` enum('1','2') NOT NULL DEFAULT '1',"
+                + "  `banMessage` text NOT NULL,"
+                + "  PRIMARY KEY (`id`)"
+                + ") ENGINE=MyISAM DEFAULT CHARSET=latin1"
+            );
+            statement.execute();
+            statement.close();
+        } catch(SQLException e) {
+            
+        } finally {
+            close(con);
         }
     }
     

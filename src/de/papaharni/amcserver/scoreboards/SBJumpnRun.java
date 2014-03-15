@@ -6,10 +6,21 @@
 
 package de.papaharni.amcserver.scoreboards;
 
+import de.papaharni.amcserver.AMCServer;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author Pappi
  */
 public class SBJumpnRun {
+    private AMCServer _plugin;
     
+    public SBJumpnRun(AMCServer plugin) {
+        _plugin = plugin;
+    }
+    
+    public void setScoreboard(Player p) {
+        
+    }
 }

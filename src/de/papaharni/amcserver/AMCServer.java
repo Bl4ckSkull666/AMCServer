@@ -1,16 +1,13 @@
 package de.papaharni.amcserver;
 
+import com.dmgkz.mcjobs.McJobs;
 import de.papaharni.amcserver.events.*;
 import de.papaharni.amcserver.commands.*;
 import de.papaharni.amcserver.database.MySQLMain;
+import de.papaharni.amcserver.scoreboards.SBMain;
 import de.papaharni.amcserver.util.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
@@ -35,6 +32,7 @@ public class AMCServer extends JavaPlugin {
     
     private List<Location> saveBlocks = new ArrayList<>();
     private MySQLMain _mysql;
+    private SBMain _sb;
     
     public static AMCServer getInstance() {
         return _instance;
@@ -53,8 +51,11 @@ public class AMCServer extends JavaPlugin {
         
         _config = new myConfig(configuration, this);
         this.saveConfig();
+        
         _debugMode = _config.debug;
         
+        checkExternPlugins();
+                
         _protect = new protection(this);
         _logger = new logging(this, _config.debug);
         
@@ -72,6 +73,7 @@ public class AMCServer extends JavaPlugin {
         this.getCommand("unsichtbar").setExecutor(new unsichtbar(this));
         
         _mysql = new MySQLMain(this);
+        _sb = new SBMain(this);
     }
     
     @Override
@@ -98,7 +100,7 @@ public class AMCServer extends JavaPlugin {
     
     private boolean setupEconomy()
     {
-        RegisteredServiceProvider economyProvider = server.getServicesManager().getRegistration(net/milkbowl/vault/economy/Economy);
+        RegisteredServiceProvider economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if(economyProvider != null)
             economy = (Economy)economyProvider.getProvider();
         return economy != null;
@@ -110,7 +112,7 @@ public class AMCServer extends JavaPlugin {
         if(getServer().getPluginManager().isPluginEnabled("mcjobs")) {
             _isMcJobs = true;
             if(getMyConfig()._mcjobs_save)
-                _isMcJobs = _database.setupMcJobsStructure();
+                getMySQL().setupMcJobsStructure();
          }
          if(!_isMcJobs)
                 getLog().error("McJobs wurde in der Statistik und Datenbank deaktiviert.");
@@ -122,5 +124,9 @@ public class AMCServer extends JavaPlugin {
     
     public MySQLMain getMySQL() {
         return _mysql;
+    }
+    
+    public SBMain getSBMain() {
+        return _sb;
     }
 }

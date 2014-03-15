@@ -6,41 +6,53 @@
 
 package de.papaharni.amcserver.scoreboards;
 
+import com.dmgkz.mcjobs.playerdata.PlayerCache;
+import de.papaharni.amcserver.AMCServer;
+import java.util.ArrayList;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+
 /**
  *
  * @author Pappi
  */
 public class SBStatistik {
-    public void setScoreboard(Player player, boolean join)
+    
+    private AMCServer _plugin;
+    
+    public SBStatistik(AMCServer plugin) {
+        _plugin = plugin;
+    }
+    
+    public void setScoreboard(Player p)
     {
-        delScoreBoardTask(player.getName());
-        Scoreboard board = null;
-        if(join)
-            board = Bukkit.getScoreboardManager().getNewScoreboard();
-        else
-            board = player.getScoreboard();
+        Scoreboard board = p.getScoreboard();
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective obj = board.getObjective((new StringBuilder()).append(player.getName()).append("_").append(getName()).toString().substring(0, 15).toLowerCase());
+        
+        Objective obj = board.getObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase());
         if(obj == null)
-            obj = board.registerNewObjective((new StringBuilder()).append(player.getName()).append("_").append(getName()).toString().substring(0, 15).toLowerCase(), "dummy");
-        if(!isPlayerHide(player.getName()))
-        {
+            obj = board.registerNewObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase(), "dummy");
+        
+        if(!_plugin.getSBMain().getStatus(p)) {
             boolean isChange = false;
             if(obj.getDisplaySlot() != DisplaySlot.SIDEBAR)
             {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
                 obj.setDisplayName((new StringBuilder()).append(setColors(_config.sb_title_color)).append(_config.sb_title).toString());
             }
-            int money = (int)Math.floor((float)getEconomy().getBalance(player.getName()));
+            int money = (int)Math.floor((float)_plugin.getEconomy().getBalance(player.getName()));
             if(obj.getScore(Bukkit.getOfflinePlayer((new StringBuilder()).append(setColors(_config.economy_color)).append(_config.economy_title).toString())).getScore() != money)
             {
                 obj.getScore(Bukkit.getOfflinePlayer((new StringBuilder()).append(setColors(_config.economy_color)).append(_config.economy_title).toString())).setScore(money);
                 isChange = true;
             }
-            if(isMcJobs() && PlayerCache.getJobCount(player.getName()) > 0)
+            if(_plugin.isMcJobs() && PlayerCache.getJobCount(p.getName()) > 0)
             {
-                ArrayList jobs = PlayerCache.getPlayerJobs(player.getName());
+                ArrayList jobs = PlayerCache.getPlayerJobs(p.getName());
                 Iterator i$ = jobs.iterator();
                 do
                 {
@@ -133,4 +145,15 @@ public class SBStatistik {
         }
     }
 
+    public void setScoreBoardTask(String player, BukkitTask task)
+    {
+        _scoreboardTask.put(player, task);
+    }
+
+    public void delScoreBoardTask(String player)
+    {
+        if(_scoreboardTask.containsKey(player))
+            ((BukkitTask)_scoreboardTask.get(player)).cancel();
+        _scoreboardTask.remove(player);
+    }
 }
