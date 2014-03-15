@@ -43,6 +43,7 @@ public class myConfig {
     public HashMap<String, String> _sbOnWorld = new HashMap<>();
     public HashMap<String, Boolean> _sbAvailable = new HashMap<>();
     public HashMap<String, Boolean> _sbStatistik = new HashMap<>();
+    public HashMap<String, String> _sbColors = new HashMap<>();
     
     //VoteRewards
     public HashMap<String, String> _vrUseable = new HashMap<>();
@@ -90,6 +91,7 @@ public class myConfig {
         _sbOnWorld = getHashMapStr(config, "scoreboard.useOnWorld");
         _sbAvailable = getHashMapBol(config, "scoreboard.use");
         _sbStatistik = getHashMapBol(config, "scoreboard.statistik");
+        _sbColors = getHashMapStr(config, "scoreboard.colors");
         
         //VoteRewards
         _vrUseable = getHashMapStr(config, "votereward.onWorld");

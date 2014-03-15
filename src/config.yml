@@ -44,6 +44,17 @@ scoreboard:
     foins: true
     sppoints: true
     vpoints: true
+  colors:
+    mcjobs: '&2'
+    statistik: '&9'
+    money: '&6'
+    mcjobs: '&2'
+    pwnfilter: '&4'
+    online: '&7'
+    foins: '&a'
+    sparbuch: '&e'
+    votes: '&d'
+    spenden: '&b'
 votereward:
   onWorld:
     HeimatStadt: namensschild

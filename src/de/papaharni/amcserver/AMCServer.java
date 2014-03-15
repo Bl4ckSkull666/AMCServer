@@ -7,6 +7,7 @@ import de.papaharni.amcserver.database.MySQLMain;
 import de.papaharni.amcserver.scoreboards.SBMain;
 import de.papaharni.amcserver.util.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
@@ -29,10 +30,12 @@ public class AMCServer extends JavaPlugin {
     
     public static Economy economy = null;
     public static boolean _isMcJobs = false;
+    public static boolean _isPwnFilter = false;
     
     private List<Location> saveBlocks = new ArrayList<>();
     private MySQLMain _mysql;
     private SBMain _sb;
+    private HashMap<String, Long> _playerOnlineSince = new HashMap<>();
     
     public static AMCServer getInstance() {
         return _instance;
@@ -113,13 +116,22 @@ public class AMCServer extends JavaPlugin {
             _isMcJobs = true;
             if(getMyConfig()._mcjobs_save)
                 getMySQL().setupMcJobsStructure();
-         }
-         if(!_isMcJobs)
-                getLog().error("McJobs wurde in der Statistik und Datenbank deaktiviert.");
+        }
+        if(!_isMcJobs)
+            getLog().error("McJobs wurde in der Statistik und Datenbank deaktiviert.");
+
+        if(getServer().getPluginManager().isPluginEnabled("PwnFilter"))
+            _isPwnFilter = true;
+        else
+            getLog().error("PwnFilter wurde fuer die Statistik deaktiviert.");
     }
     
     public boolean isMcJobs() {
         return _isMcJobs;
+    }
+    
+    public boolean isPwnFilter() {
+        return _isPwnFilter;
     }
     
     public MySQLMain getMySQL() {
@@ -128,5 +140,9 @@ public class AMCServer extends JavaPlugin {
     
     public SBMain getSBMain() {
         return _sb;
+    }
+    
+    public HashMap<String ,Long> getPlayerOnlineSince() {
+        return _playerOnlineSince;
     }
 }

@@ -22,10 +22,10 @@ import org.bukkit.entity.Player;
  */
 public class MySQLMain {
     
-    private AMCServer _plugin;
+    public AMCServer _plugin;
     private final MySQLJump _jump;
     private final MySQLPvP _pvp;
-    private final MySQLStatistik _stat;
+    private final MySQLStatistik _stats;
     
     public MySQLMain(AMCServer plugin)
     {
@@ -42,7 +42,7 @@ public class MySQLMain {
         }
         _jump = new MySQLJump(_plugin);
         _pvp = new MySQLPvP(_plugin);
-        _stat = new MySQLStatistik(_plugin);
+        _stats = new MySQLStatistik(_plugin);
     }
 
     private boolean getTestConnect()
@@ -249,6 +249,18 @@ public class MySQLMain {
         } catch(SQLException e) {
             _plugin.getLog().error("Fehler beim beenden einer MySQL Verbindung", e);
         }
+    }
+    
+    public MySQLStatistik getStats() {
+        return _stats;
+    }
+    
+    public MySQLJump getJump() {
+        return _jump;
+    }
+    
+    public MySQLPvP getPvP() {
+        return _pvp;
     }
     
 }
