@@ -7,7 +7,9 @@
 package de.papaharni.amcserver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -26,11 +28,24 @@ public class myConfig {
     public String _leaveMessage;
     
     //MySQL - Server
+    public HashMap<String, String> _smysql = new HashMap<>();
     
     //MySQL - Forum
+    public HashMap<String, String> _fmysql = new HashMap<>();
     
     //MySQL - Homepage
+    public HashMap<String, String> _hmysql = new HashMap<>();
     
+    //Use MySQL Tables
+    public HashMap<String, String> _tmysql = new HashMap<>();
+    
+    //Scoreboard Options
+    public HashMap<String, String> _sbOnWorld = new HashMap<>();
+    public HashMap<String, Boolean> _sbAvailable = new HashMap<>();
+    public HashMap<String, Boolean> _sbStatistik = new HashMap<>();
+    
+    //VoteRewards
+    public HashMap<String, String> _vrUseable = new HashMap<>();
     
     //Protections
     public boolean _protect_onuse_use;
@@ -51,6 +66,10 @@ public class myConfig {
     public boolean _protect_entity_lightning;
     public int _protect_entity_lightning_dmg;
     
+    //McJobs
+    public boolean _mcjobs_save;
+    public long _mcjobs_interval;
+    
     //Messages
     
     
@@ -58,8 +77,22 @@ public class myConfig {
         _plugin = plugin;
         this.debug = config.getBoolean("debug", false);
         
+        _smysql = getHashMapStr(config, "mysql.server");
+        _fmysql = getHashMapStr(config, "mysql.forum");
+        _hmysql = getHashMapStr(config, "mysql.homepage");
+        _tmysql = getHashMapStr(config, "mysql.tables");
+        
+        
         _joinMessage = ChatColor.translateAlternateColorCodes('&',config.getString("join", "&2%player% ist zu uns gestossen."));
         _leaveMessage = ChatColor.translateAlternateColorCodes('&',config.getString("leave", "&c%player% hat uns verlassen."));
+        
+        //ScoreBoard Options
+        _sbOnWorld = getHashMapStr(config, "scoreboard.useOnWorld");
+        _sbAvailable = getHashMapBol(config, "scoreboard.use");
+        _sbStatistik = getHashMapBol(config, "scoreboard.statistik");
+        
+        //VoteRewards
+        _vrUseable = getHashMapStr(config, "votereward.onWorld");
         
         //Protection Furnace/Brewer on use
         _protect_onuse_use = config.getBoolean("protect.onuse.use", false);
@@ -108,5 +141,29 @@ public class myConfig {
             }
         }
         return etl;
+    }
+    
+    private HashMap<String, String> getHashMapStr(Configuration config, String path) {
+        HashMap<String, String> hm = new HashMap<>();
+        for(String key : config.getConfigurationSection(path).getKeys(false)) {
+            hm.put(key.toLowerCase(), config.getString(path + key));
+        }
+        return hm;
+    }
+    
+    private HashMap<String, Boolean> getHashMapBol(Configuration config, String path) {
+        HashMap<String, Boolean> hm = new HashMap<>();
+        for(String key : config.getConfigurationSection(path).getKeys(false)) {
+            hm.put(key.toLowerCase(), config.getBoolean(path + key, false));
+        }
+        return hm;
+    }
+    
+    private HashMap<String, Boolean> getHashMapItem(Configuration config, String path) {
+        HashMap<String, Boolean> hm = new HashMap<>();
+        for(String key : config.getConfigurationSection(path).getKeys(false)) {
+            hm.put(key.toLowerCase(), config.getBoolean(path + key, false));
+        }
+        return hm;
     }
 }

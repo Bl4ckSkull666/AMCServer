@@ -3,23 +3,56 @@ join: '&2%player% ist zu uns gestossen.'
 leave: '&c%player% hat uns verlassen.'
 mysql:
   server:
+    use: 'false'
     host: '127.0.0.1'
     port: '3306'
     user: 'root'
     pass: 'root'
     data: 'server'
   forum:
+    use: 'false'
     host: '127.0.0.1'
     port: '3306'
     user: 'root'
     pass: 'root'
     data: 'forum'
   homepage:
+    use: 'false'
     host: '127.0.0.1'
     port: '3306'
     user: 'root'
     pass: 'root'
     data: 'homepage'
+  tables:
+    mcjobs: 'server'
+    pvprewards: 'server'
+    bb1_users: 'forum'
+    authme_activation: 'server'
+scoreboard:
+  useOnWorld:
+    default: Statistik
+    JumpnRun: JnR
+    PvPWelt: PvP
+    CreativeWelt: none
+  use:
+    statistik: true
+    jnr: true
+    pvp: true
+  statistik:
+    vault: true
+    mcjobs: true
+    foins: true
+    sppoints: true
+    vpoints: true
+votereward:
+  onWorld:
+    HeimatStadt: namensschild
+    FarmWelt: namensschild
+    PvPFarmWelt: namensschild
+    PvPWelt: smaragd
+  items:
+    namensschild: vp 5:name_tag 1,vp 5:saddle
+    smaragd: vp 5:emerald 1
 protect:
   onuse:
     use: true
@@ -45,3 +78,6 @@ protect:
     msg: '&cEs ist dir nicht erlaubt %entity% anzugreifen.'
     lightning: true
     lightning_dmg_chance: 50
+mcjobs:
+  save: true
+  interval: 600

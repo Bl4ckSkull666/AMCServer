@@ -2,6 +2,7 @@ package de.papaharni.amcserver;
 
 import de.papaharni.amcserver.events.*;
 import de.papaharni.amcserver.commands.*;
+import de.papaharni.amcserver.database.MySQLMain;
 import de.papaharni.amcserver.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -27,7 +30,11 @@ public class AMCServer extends JavaPlugin {
     private protection _protect;
     private logging _logger;
     
+    public static Economy economy = null;
+    public static boolean _isMcJobs = false;
+    
     private List<Location> saveBlocks = new ArrayList<>();
+    private MySQLMain _mysql;
     
     public static AMCServer getInstance() {
         return _instance;
@@ -63,6 +70,8 @@ public class AMCServer extends JavaPlugin {
         this.getCommand("run").setExecutor(new run());
         this.getCommand("nachtsicht").setExecutor(new nachtsicht(this));
         this.getCommand("unsichtbar").setExecutor(new unsichtbar(this));
+        
+        _mysql = new MySQLMain(this);
     }
     
     @Override
@@ -80,5 +89,38 @@ public class AMCServer extends JavaPlugin {
     
     public logging getLog() {
         return _logger;
+    }
+    
+    public Economy getEconomy()
+    {
+        return economy;
+    }
+    
+    private boolean setupEconomy()
+    {
+        RegisteredServiceProvider economyProvider = server.getServicesManager().getRegistration(net/milkbowl/vault/economy/Economy);
+        if(economyProvider != null)
+            economy = (Economy)economyProvider.getProvider();
+        return economy != null;
+    }
+    
+    private void checkExternPlugins() {
+        setupEconomy();
+        
+        if(getServer().getPluginManager().isPluginEnabled("mcjobs")) {
+            _isMcJobs = true;
+            if(getMyConfig()._mcjobs_save)
+                _isMcJobs = _database.setupMcJobsStructure();
+         }
+         if(!_isMcJobs)
+                getLog().error("McJobs wurde in der Statistik und Datenbank deaktiviert.");
+    }
+    
+    public boolean isMcJobs() {
+        return _isMcJobs;
+    }
+    
+    public MySQLMain getMySQL() {
+        return _mysql;
     }
 }

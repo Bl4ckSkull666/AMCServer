@@ -4,20 +4,12 @@
  * and open the template in the editor.
  */
 
-package de.papaharni.amcserver.database;
-
-import de.papaharni.amcserver.AMCServer;
+package de.papaharni.amcserver.scoreboards;
 
 /**
  *
  * @author Pappi
  */
-public class MySQLPvP {
-    private AMCServer _plugin;
-    
-    public MySQLPvP(AMCServer plugin) {
-        _plugin = plugin;
-    }
-    
+public class SBPvP {
     
 }
