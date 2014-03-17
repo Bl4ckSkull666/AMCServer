@@ -7,12 +7,13 @@
 package de.papaharni.amcserver.database;
 
 import de.papaharni.amcserver.AMCServer;
+import de.papaharni.amcserver.util.JumpArena;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import org.bukkit.entity.Player;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -25,32 +26,63 @@ public class MySQLJump {
         _plugin = plugin;
     }
     
-    public HashMap<Integer, int[]> getDataFromDB(Player p) {
-        HashMap<Integer, int[]> hmap = new HashMap<>();
-        if(!_plugin.getMyConfig()._tmysql.containsKey("jumpnrun"))
-            return hmap;
+    public List<JumpArena> loadArenas(String p) {
+        List<JumpArena> jal = new ArrayList<>();
         
         Connection con = null;
         try {
-            con = _plugin.getMySQL().getConnect(_plugin.getMyConfig()._tmysql.get("mcjobs"));
+            con = _plugin.getMySQL().getConnect(_plugin.getMyConfig()._tmysql.get("jumpnrun"));
             if(con == null)
-                return hmap;
+                return jal;
             
             PreparedStatement statement = con.prepareStatement("SELECT `arenaid`,`wins`,`attempts` FROM `jumpnruns` WHERE `username` = ?");
-            statement.setString(1, p.getName());
+            statement.setString(1, p);
             ResultSet rset = statement.executeQuery();
             while(rset.next()) {
-                int[] jstat = {rset.getInt("attepmts"), rset.getInt("wins")};
-                hmap.put(rset.getInt("arenaid"), jstat);
+                JumpArena ja = new JumpArena(rset.getInt("arenaid"), rset.getInt("attepmts"), rset.getInt("wins"));
+                jal.add(ja);
             }
             rset.close();
             statement.close();
+            
         } catch(SQLException e) {
             _plugin.getLog().error("Fehler beim Auslesen der jumpnrun Tabelle", e);
             _plugin.getMySQL().close(con);
         } finally {
             _plugin.getMySQL().close(con);
         }
-        return hmap;
+        return jal;
+    }
+    
+    public void saveArenas(String p, List<JumpArena> jal) {
+        if(jal.isEmpty())
+            return;
+        
+        if(!_plugin.getMyConfig()._tmysql.containsKey("jumpnrun"))
+            return;
+        
+        Connection con = null;
+        try {
+            con = _plugin.getMySQL().getConnect(_plugin.getMyConfig()._tmysql.get("jumpnrun"));
+            if(con == null)
+                return;
+            
+            PreparedStatement statement = con.prepareStatement("INSERT INTO `jumpnruns` (`username`,`arenaid`,`attempts`,`wins`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `attempts`=?,`wins`=?");
+            for(JumpArena ja: jal) {
+                statement.setString(1, p);
+                statement.setInt(2, ja.getArenaId());
+                statement.setInt(3, ja.getPlayed());
+                statement.setInt(4, ja.getWins());
+                statement.setInt(5, ja.getPlayed());
+                statement.setInt(6, ja.getWins());
+                statement.execute();
+            }
+            statement.close();
+        } catch(SQLException e) {
+            _plugin.getLog().error("Fehler beim Speichern der JumpnRun Spielerstände von " + p, e);
+            _plugin.getMySQL().close(con);
+        } finally {
+            _plugin.getMySQL().close(con);
+        }
     }
 }
