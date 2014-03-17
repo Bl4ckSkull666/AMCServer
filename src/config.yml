@@ -64,6 +64,10 @@ votereward:
   items:
     namensschild: vp 5:name_tag 1,vp 5:saddle
     smaragd: vp 5:emerald 1
+pvp:
+  use: true
+  onWorld:
+    - PvPWelt
 protect:
   onuse:
     use: true

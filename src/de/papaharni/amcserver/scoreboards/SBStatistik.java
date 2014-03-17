@@ -36,7 +36,7 @@ public class SBStatistik {
             board = Bukkit.getScoreboardManager().getNewScoreboard();
         
         Objective obj = board.getObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase());
-        if(obj == null)
+        if(obj == null || !obj.getDisplayName().contains("Statistik"))
             obj = board.registerNewObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase(), "dummy");
         
         if(!_plugin.getSBMain().getStatus(p)) {

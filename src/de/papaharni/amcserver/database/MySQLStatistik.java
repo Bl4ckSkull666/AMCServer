@@ -25,7 +25,7 @@ public class MySQLStatistik {
     }
     
     public int[] getFromBB(Player p) {
-        int[] vspf = new int[4];
+        int[] vspf = {0, 0, 0, 0};
         if(!_plugin.getMyConfig()._tmysql.containsKey("bb1_users"))
             return vspf;
         
@@ -35,7 +35,7 @@ public class MySQLStatistik {
             if(con == null)
                 return vspf;
             
-            PreparedStatement statement = con.prepareStatement("SELECT `guthaben`,`sparbuch`,`vote_points`,`payClicks` WHERE `username` = ? LIMIT 0,1");
+            PreparedStatement statement = con.prepareStatement("SELECT `guthaben`,`sparbuch`,`vote_points`,`payClicks` FROM `bb1_users` WHERE `username` = ? LIMIT 0,1");
             statement.setString(1, p.getName());
             ResultSet rset = statement.executeQuery();
             if(rset.next()) {

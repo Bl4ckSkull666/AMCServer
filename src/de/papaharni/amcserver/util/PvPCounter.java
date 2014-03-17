@@ -8,21 +8,16 @@ import de.papaharni.amcserver.AMCServer;
  */
 public class PvPCounter
 {
+    private String userName;
+    private int userWins;
+    private int userLose;
 
     public PvPCounter(String uname)
     {
-        int playerData[] = AMCServer.getInstance().getMySQL().getPlayerData(uname);
-        if(playerData[0] > -1 && playerData[1] > -1)
-        {
-            userName = uname;
-            userWins = playerData[0];
-            userLose = playerData[1];
-        } else
-        {
-            userName = uname;
-            userWins = 0;
-            userLose = 0;
-        }
+        int playerData[] = AMCServer.getInstance().getMySQL().getPvP().getPvPStats(uname);
+        userName = uname;
+        userWins = playerData[0];
+        userLose = playerData[1];
     }
 
     public int getWins()
@@ -33,11 +28,6 @@ public class PvPCounter
     public int getLose()
     {
         return userLose;
-    }
-
-    public int getUserId()
-    {
-        return userId;
     }
 
     public void setWins(int allWins)
@@ -69,9 +59,8 @@ public class PvPCounter
     {
         userLose++;
     }
-
-    private int userId;
-    private String userName;
-    private int userWins;
-    private int userLose;
+    
+    public int getScore() {
+        return (userWins-userLose);
+    }
 }

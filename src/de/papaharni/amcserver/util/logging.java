@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Pappi
  */
-public class logging extends AMCServer {
+public class logging {
     
     private AMCServer _plugin;
     private static Logger _log;

@@ -40,6 +40,11 @@ public class MySQLMain {
             _plugin.getLog().error("Fehler bei den Test Verbindungen zum MySQL Server! Beende Plugin.");
             _plugin.getServer().getPluginManager().disablePlugin(_plugin);
         }
+        
+        setupMcJobsStructure();
+        setupJumpnRunStructure();
+        setupPvPStructure();
+        
         _jump = new MySQLJump(_plugin);
         _pvp = new MySQLPvP(_plugin);
         _stats = new MySQLStatistik(_plugin);
@@ -158,7 +163,7 @@ public class MySQLMain {
         }
     }
     
-    public void setupMcJobsStructure() {
+    public final void setupMcJobsStructure() {
         if(!_plugin.getMyConfig()._tmysql.containsKey("mcjobs"))
             return;
         
@@ -174,6 +179,57 @@ public class MySQLMain {
                     + "`exp_up` bigint(13) NOT NULL, "
                     + "`rank` varchar(32) DEFAULT NULL, "
                     + "PRIMARY KEY (`username`,`jobname`,`level`)) "
+                    + "ENGINE=MyISAM DEFAULT CHARSET=latin1"
+            );
+            statement.execute();
+            statement.close();
+        } catch(SQLException e) {
+            
+        } finally {
+            close(con);
+        }
+    }
+    
+    public final void setupJumpnRunStructure() {
+        if(!_plugin.getMyConfig()._tmysql.containsKey("jumpnrun"))
+            return;
+        
+        Connection con = null;
+        try {
+            con = getConnect(_plugin.getMyConfig()._tmysql.get("jumpnrun"));
+            if(con == null)
+                return;
+            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `jumpnruns` (`username` varchar(32) NOT NULL, "
+                    + "`arenaid` int(11) NOT NULL, "
+                    + "`attempts` int(11) NOT NULL DEFAULT '0', "
+                    + "`wins` int(11) NOT NULL DEFAULT '0', "
+                    + "PRIMARY KEY (`username`,`arenaid`)) "
+                    + "ENGINE=MyISAM DEFAULT CHARSET=latin1"
+            );
+            statement.execute();
+            statement.close();
+        } catch(SQLException e) {
+            
+        } finally {
+            close(con);
+        }
+    }
+    
+    public final void setupPvPStructure() {
+        if(!_plugin.getMyConfig()._tmysql.containsKey("pvp"))
+            return;
+        
+        Connection con = null;
+        try {
+            con = getConnect(_plugin.getMyConfig()._tmysql.get("pvp"));
+            if(con == null)
+                return;
+            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `mcjobs` (`username` varchar(32) NOT NULL, "
+                    + "`wins` int(11) NOT NULL DEFAULT '0', "
+                    + "`lose` int(11) NOT NULL DEFAULT '0', "
+                    + "`exp_up` bigint(13) NOT NULL, "
+                    + "`rank` varchar(32) DEFAULT NULL, "
+                    + "PRIMARY KEY (`username`)) "
                     + "ENGINE=MyISAM DEFAULT CHARSET=latin1"
             );
             statement.execute();

@@ -17,7 +17,7 @@ import java.util.Map;
 public class PvPCounters {
     
     private AMCServer _plugin;
-    private Map<String, PvPCounter> pvpcounts = new HashMap<>();
+    private Map<String, PvPCounter> _pvpcounts = new HashMap<>();
     
     public PvPCounters(AMCServer plugin) {
         _plugin = plugin;
@@ -60,24 +60,39 @@ public class PvPCounters {
     }
     
     public boolean isPvPCounter(String uname) {
-        return pvpcounts.containsKey(uname);
+        return _pvpcounts.containsKey(uname);
     }
 
     public PvPCounter getPvPCounter(String uname) {
         if(isPvPCounter(uname))
-            return pvpcounts.get(uname);
+            return _pvpcounts.get(uname);
         else
             return null;
     }
-
-    public void setPvPCounter(String uname, PvPCounter myCount) {
-        pvpcounts.put(uname, myCount);
+    
+    public void loadPvPCounter(String p) {
+        _pvpcounts.put(p, new PvPCounter(p));
     }
 
-    public void savePvPCounter()
-    {
-        for(Map.Entry e: pvpcounts.entrySet()) {
-            _plugin.getMySQL().PvP().savePlayerCount((String)e.getKey(), ((PvPCounter)e.getValue()).getWins(), ((PvPCounter)e.getValue()).getLose());
+    public void setPvPCounter(String uname, PvPCounter myCount) {
+        _pvpcounts.put(uname, myCount);
+    }
+
+    public void savePvPCounters() {
+        for(Map.Entry e: _pvpcounts.entrySet()) {
+            _plugin.getMySQL().getPvP().setPvPStats((String)e.getKey(), (PvPCounter)e.getValue());
+        }
+    }
+    
+    public void savePvPCounter(String p) {
+        if(_pvpcounts.containsKey(p)) {
+            _plugin.getMySQL().getPvP().setPvPStats(p, _pvpcounts.get(p));
+        }
+    }
+    
+    public void delPvPCounter(String p) {
+        if(_pvpcounts.containsKey(p)) {
+            _pvpcounts.remove(p);
         }
     }
 }

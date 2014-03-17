@@ -35,6 +35,7 @@ public class AMCServer extends JavaPlugin {
     private List<Location> saveBlocks = new ArrayList<>();
     private MySQLMain _mysql;
     private SBMain _sb;
+    private PvPCounters _pvpcs;
     private HashMap<String, Long> _playerOnlineSince = new HashMap<>();
     
     public static AMCServer getInstance() {
@@ -140,6 +141,10 @@ public class AMCServer extends JavaPlugin {
     
     public SBMain getSBMain() {
         return _sb;
+    }
+    
+    public PvPCounters getPvPCs() {
+        return _pvpcs;
     }
     
     public HashMap<String ,Long> getPlayerOnlineSince() {
