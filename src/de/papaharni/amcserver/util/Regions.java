@@ -98,6 +98,10 @@ public class Regions {
         return null;
     }
     
+    public void addRegion(Region r) {
+        _regions.add(r);
+    }
+    
     public void setPlayerInRegion(String p, Region r) {
         _playerIn.put(p, r);
     }

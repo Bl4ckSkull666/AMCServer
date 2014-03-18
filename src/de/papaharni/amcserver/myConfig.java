@@ -6,6 +6,7 @@
 
 package de.papaharni.amcserver;
 
+import de.papaharni.amcserver.util.Region;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -181,8 +182,8 @@ public class myConfig {
             
             World w = Bukkit.getWorld(world);
             
-            if(isNumeric(key) && w != null && isNumeric(minX) && isNumeric(minY) && isNumeric(minZ) && isNumeric(maxX) && isNumeric(maxY) && isNumeric(maxZ)) {
-                
+            if(w != null && isNumeric(minX) && isNumeric(minY) && isNumeric(minZ) && isNumeric(maxX) && isNumeric(maxY) && isNumeric(maxZ)) {
+                Region r = new Region(world, key, Integer.parseInt(minX), Integer.parseInt(minY), Integer.parseInt(minZ), Integer.parseInt(maxX), Integer.parseInt(maxY), Integer.parseInt(maxZ));
             }
         }
     }
