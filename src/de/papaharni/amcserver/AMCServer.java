@@ -36,6 +36,7 @@ public class AMCServer extends JavaPlugin {
     private MySQLMain _mysql;
     private SBMain _sb;
     private PvPCounters _pvpcs;
+    private JumpPlayer _jumps;
     private HashMap<String, Long> _playerOnlineSince = new HashMap<>();
     
     public static AMCServer getInstance() {
@@ -78,6 +79,8 @@ public class AMCServer extends JavaPlugin {
         
         _mysql = new MySQLMain(this);
         _sb = new SBMain(this);
+        _jumps = new JumpPlayer(this);
+        _pvpcs = new PvPCounters(this);
     }
     
     @Override
@@ -145,6 +148,10 @@ public class AMCServer extends JavaPlugin {
     
     public PvPCounters getPvPCs() {
         return _pvpcs;
+    }
+    
+    public JumpPlayer getJumps() {
+        return _jumps;
     }
     
     public HashMap<String ,Long> getPlayerOnlineSince() {

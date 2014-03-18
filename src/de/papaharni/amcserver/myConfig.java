@@ -168,4 +168,31 @@ public class myConfig {
         }
         return hm;
     }
+    
+    private void readJumpArenas(Configuration config, String path) {
+        for(String key : config.getConfigurationSection(path).getKeys(false)) {
+            String minX = config.getString(path + key + ".min.x");
+            String minY = config.getString(path + key + ".min.y");
+            String minZ = config.getString(path + key + ".min.z");
+            String maxX = config.getString(path + key + ".max.x");
+            String maxY = config.getString(path + key + ".max.y");
+            String maxZ = config.getString(path + key + ".max.z");
+            String world = config.getString(path + key + ".world");
+            
+            World w = Bukkit.getWorld(world);
+            
+            if(isNumeric(key) && w != null && isNumeric(minX) && isNumeric(minY) && isNumeric(minZ) && isNumeric(maxX) && isNumeric(maxY) && isNumeric(maxZ)) {
+                
+            }
+        }
+    }
+    
+    private boolean isNumeric(String str) {
+        try {
+            int i = Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
 }

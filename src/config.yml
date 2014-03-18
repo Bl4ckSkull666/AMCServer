@@ -96,3 +96,14 @@ protect:
 mcjobs:
   save: true
   interval: 600
+jumparenas:
+  1:
+    world: JumnRun
+    min:
+      x: 50
+      y: 60
+      z: 30
+    max:
+      x: 125
+      y: 120
+      z: 105

@@ -39,7 +39,7 @@ public class SBPvP {
         if(obj == null)
             obj = board.registerNewObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase(), "dummy");
         
-        if(!_plugin.getSBMain().getStatus(p)) {    
+        if(_plugin.getSBMain().getStatus(p)) {    
             if(obj.getDisplaySlot() != DisplaySlot.SIDEBAR) {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
                 String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
