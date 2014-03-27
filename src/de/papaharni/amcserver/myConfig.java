@@ -10,7 +10,6 @@ import de.papaharni.amcserver.util.Region;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -49,6 +48,9 @@ public class myConfig {
     //VoteRewards
     public HashMap<String, String> _vrUseable = new HashMap<>();
     
+    public HashMap<String, String> _wTimes = new HashMap<>();
+    public long _wTimes_interval;
+    
     //Protections
     public boolean _protect_onuse_use;
     public List<String> _protect_onuse_world;
@@ -72,7 +74,7 @@ public class myConfig {
     public boolean _mcjobs_save;
     public long _mcjobs_interval;
     
-    //Messages
+    //Regions
     
     
     public myConfig(Configuration config, AMCServer plugin) {
@@ -118,6 +120,8 @@ public class myConfig {
         _protect_entity_lightning_dmg = config.getInt("protect.entity.lightning_dmg_chance", 0);
         
         //Messages
+        _wTimes = getHashMapStrWorld(config, "tw_list");
+        _wTimes_interval = config.getLong("tw_interval", 200);
     }
     
     private List<String> getWorldList(List<String> str_worlds) {
@@ -146,6 +150,17 @@ public class myConfig {
         return etl;
     }
     
+    private HashMap<String, String> getHashMapStrWorld(Configuration config, String path) {
+        HashMap<String, String> hm = new HashMap<>();
+        for(String key : config.getConfigurationSection(path).getKeys(false)) {
+            if(Bukkit.getWorld(key) != null)
+                hm.put(key.toLowerCase(), config.getString(path + key));
+            else
+                _plugin.getLog().debug("Die angebene Welt " + key + " existiert nicht und wird Ignoriert.");
+        }
+        return hm;
+    }
+    
     private HashMap<String, String> getHashMapStr(Configuration config, String path) {
         HashMap<String, String> hm = new HashMap<>();
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
@@ -170,7 +185,7 @@ public class myConfig {
         return hm;
     }
     
-    private void readJumpArenas(Configuration config, String path) {
+    private void readRegions(Configuration config, String path) {
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
             String minX = config.getString(path + key + ".min.x");
             String minY = config.getString(path + key + ".min.y");
@@ -184,6 +199,7 @@ public class myConfig {
             
             if(w != null && isNumeric(minX) && isNumeric(minY) && isNumeric(minZ) && isNumeric(maxX) && isNumeric(maxY) && isNumeric(maxZ)) {
                 Region r = new Region(world, key, Integer.parseInt(minX), Integer.parseInt(minY), Integer.parseInt(minZ), Integer.parseInt(maxX), Integer.parseInt(maxY), Integer.parseInt(maxZ));
+                _plugin.getRegions().addRegion(r);
             }
         }
     }

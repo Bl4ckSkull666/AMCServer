@@ -1,6 +1,5 @@
 package de.papaharni.amcserver;
 
-import com.dmgkz.mcjobs.McJobs;
 import de.papaharni.amcserver.events.*;
 import de.papaharni.amcserver.commands.*;
 import de.papaharni.amcserver.database.MySQLMain;
@@ -37,6 +36,7 @@ public class AMCServer extends JavaPlugin {
     private SBMain _sb;
     private PvPCounters _pvpcs;
     private JumpPlayer _jumps;
+    private Regions _regions;
     private HashMap<String, Long> _playerOnlineSince = new HashMap<>();
     
     public static AMCServer getInstance() {
@@ -46,6 +46,9 @@ public class AMCServer extends JavaPlugin {
     @Override
     public void onEnable() {
         _instance = this;
+        
+        _pvpcs = new PvPCounters(this);
+        _regions = new Regions(this);
         
         Configuration configuration = this.getConfig();
         if(!this.getDataFolder().exists())
@@ -80,7 +83,6 @@ public class AMCServer extends JavaPlugin {
         _mysql = new MySQLMain(this);
         _sb = new SBMain(this);
         _jumps = new JumpPlayer(this);
-        _pvpcs = new PvPCounters(this);
     }
     
     @Override
@@ -152,6 +154,10 @@ public class AMCServer extends JavaPlugin {
     
     public JumpPlayer getJumps() {
         return _jumps;
+    }
+    
+    public Regions getRegions() {
+        return _regions;
     }
     
     public HashMap<String ,Long> getPlayerOnlineSince() {

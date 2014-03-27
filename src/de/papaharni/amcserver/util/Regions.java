@@ -19,22 +19,21 @@ import org.bukkit.World;
  * @author Pappi
  */
 public class Regions {
-    private AMCServer _plugin;
+    private final AMCServer _plugin;
     
+    private HashMap<String, List<Region>> _regs = new HashMap<>();
     private List<Region> _regions = new ArrayList<>();
     private HashMap<String, Region> _playerIn = new HashMap<>();
+    private HashMap<String, Region> _inCreationPrcess = new HashMap<>();
     
     public Regions(AMCServer plugin) {
         _plugin = plugin;
     }
     
     public List<Region> getRegionListByWorld(String world) {
+        if(_regs.containsKey(world))
+            return _regs.get(world);
         List<Region> rl = new ArrayList<>();
-        for(Region r: _regions) {
-            if(r.getStringWorld().equalsIgnoreCase(world)) {
-                rl.add(r);
-            }
-        }
         return rl;
     }
     
@@ -99,10 +98,30 @@ public class Regions {
     }
     
     public void addRegion(Region r) {
-        _regions.add(r);
+        if(!_regs.containsKey(r.getStringWorld())) {
+            List<Region> rl = new ArrayList<>();
+            _regs.put(r.getStringWorld(), rl);
+        }
+        _regs.get(r.getStringWorld()).add(r);
     }
     
     public void setPlayerInRegion(String p, Region r) {
         _playerIn.put(p, r);
+    }
+    
+    public void setInCreate(String p, Region r) {
+        _inCreationPrcess.put(p, r);
+    }
+    
+    public Region getInCreate(String p, Region r) {
+        return _inCreationPrcess.containsKey(p)?_inCreationPrcess.get(p):null;
+    }
+    
+    public boolean RegionExist(String name, String world) {
+        for(Region rl: getRegionListByWorld(world)) {
+            if(rl.getName().equalsIgnoreCase(name))
+               return true;
+        }
+        return false;
     }
 }

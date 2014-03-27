@@ -25,13 +25,13 @@ public class JumpPlayer {
         _plugin = plugin;
     }
     
-    public JumpArena getArena(Player p, int arena) {
+    public JumpArena getArena(Player p, String arena) {
         JumpArena dummy = new JumpArena(arena, 0,0);
         if(!_playersList.containsKey(p.getName()))
             return dummy;
         
         for(JumpArena ja: _playersList.get(p.getName())) {
-            if(ja.getArenaId() == arena)
+            if(ja.getArena() == arena)
                 return ja;
         }
         return dummy;

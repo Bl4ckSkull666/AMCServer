@@ -9,13 +9,11 @@ package de.papaharni.amcserver.scoreboards;
 import com.dmgkz.mcjobs.playerdata.PlayerCache;
 import com.pwn9.PwnFilter.util.PointManager;
 import de.papaharni.amcserver.AMCServer;
-import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 /**

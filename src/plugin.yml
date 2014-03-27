@@ -2,7 +2,7 @@ name: AMCServer
 version: 0.1
 author: PapaHarni
 main: de.papaharni.amcserver.AMCServer
-
+depend: [mcjobs,PwnFilter,Vault]
 commands:
   tpplayer:
     description: Erlaubt es Fremde Spieler zu bestimmnten Welten und Koordinaten zu teleportieren.

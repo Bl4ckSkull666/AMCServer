@@ -14,18 +14,18 @@ import java.util.HashMap;
  */
 public class JumpArena {
     
-    private int _arenaid;
+    private String _arena;
     private int _played;
     private int _wins;
     
-    public JumpArena(int arena, int played, int wins) {
-        _arenaid = arena;
+    public JumpArena(String arena, int played, int wins) {
+        _arena = arena;
         _played = played;
         _wins = wins;
     }
     
-    public int getArenaId() {
-        return _arenaid;
+    public String getArena() {
+        return _arena;
     }
     
     public int getPlayed() {
@@ -36,8 +36,8 @@ public class JumpArena {
         return _wins;
     }
     
-    public void setArenaId(int arenaid) {
-        _arenaid = arenaid;
+    public void setArena(String arena) {
+        _arena = arena;
     }
     
     public void setPlayed(int played) {

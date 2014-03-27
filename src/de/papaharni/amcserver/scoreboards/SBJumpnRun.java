@@ -49,11 +49,11 @@ public class SBJumpnRun {
             int versuche = 0;
             int gewonnen = 0;
             
-            int best_arenaid = 0;
+            String best_arena = "";
             int best_wins = 0;
             String best_color = "";
             
-            int most_arenaid = 0;
+            String most_arena = "";
             int most_played = 0;
             String most_color = "";
             
@@ -63,20 +63,20 @@ public class SBJumpnRun {
                 
                 if(ja.getWins() > best_wins) {
                     best_wins = ja.getWins();
-                    best_arenaid = ja.getArenaId();
-                    best_color = _plugin.getMyConfig()._sbColors.containsKey("arena" + ja.getArenaId())?_plugin.getMyConfig()._sbColors.get("arena" + ja.getArenaId()):"";
+                    best_arena = ja.getArena();
+                    best_color = _plugin.getMyConfig()._sbColors.containsKey("arena" + ja.getArena())?_plugin.getMyConfig()._sbColors.get("arena" + ja.getArena()):"";
                 }
                 if(ja.getPlayed() > most_played) {
                     most_played = ja.getPlayed();
-                    most_arenaid = ja.getArenaId();
-                    most_color = _plugin.getMyConfig()._sbColors.containsKey("arena" + ja.getArenaId())?_plugin.getMyConfig()._sbColors.get("arena" + ja.getArenaId()):"";
+                    most_arena = ja.getArena();
+                    most_color = _plugin.getMyConfig()._sbColors.containsKey("arena" + ja.getArena())?_plugin.getMyConfig()._sbColors.get("arena" + ja.getArena()):"";
                 }
             }
-            if(most_arenaid > 0)
-                obj.getScore(Bukkit.getOfflinePlayer(setColors(most_color + "Arena " + most_arenaid))).setScore(most_played);
+            if(!most_arena.isEmpty())
+                obj.getScore(Bukkit.getOfflinePlayer(setColors(most_color + "Arena " + most_arena))).setScore(most_played);
             
-            if(best_arenaid > 0)
-                obj.getScore(Bukkit.getOfflinePlayer(setColors(best_color + "Arena " + best_arenaid))).setScore(best_wins);
+            if(!best_arena.isEmpty())
+                obj.getScore(Bukkit.getOfflinePlayer(setColors(best_color + "Arena " + best_arena))).setScore(best_wins);
             
             String versuchColor = _plugin.getMyConfig()._sbColors.containsKey("jnr_versuch")?_plugin.getMyConfig()._sbColors.get("jnr_versuch"):"";
             obj.getScore(Bukkit.getOfflinePlayer(setColors(versuchColor + "Versuche"))).setScore(versuche);

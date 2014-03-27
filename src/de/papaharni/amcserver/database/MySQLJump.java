@@ -35,11 +35,11 @@ public class MySQLJump {
             if(con == null)
                 return jal;
             
-            PreparedStatement statement = con.prepareStatement("SELECT `arenaid`,`wins`,`attempts` FROM `jumpnruns` WHERE `username` = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT `arena`,`wins`,`attempts` FROM `jumpnruns` WHERE `username` = ?");
             statement.setString(1, p);
             ResultSet rset = statement.executeQuery();
             while(rset.next()) {
-                JumpArena ja = new JumpArena(rset.getInt("arenaid"), rset.getInt("attepmts"), rset.getInt("wins"));
+                JumpArena ja = new JumpArena(rset.getString("arena"), rset.getInt("attepmts"), rset.getInt("wins"));
                 jal.add(ja);
             }
             rset.close();
@@ -67,10 +67,10 @@ public class MySQLJump {
             if(con == null)
                 return;
             
-            PreparedStatement statement = con.prepareStatement("INSERT INTO `jumpnruns` (`username`,`arenaid`,`attempts`,`wins`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `attempts`=?,`wins`=?");
+            PreparedStatement statement = con.prepareStatement("INSERT INTO `jumpnruns` (`username`,`arena`,`attempts`,`wins`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `attempts`=?,`wins`=?");
             for(JumpArena ja: jal) {
                 statement.setString(1, p);
-                statement.setInt(2, ja.getArenaId());
+                statement.setString(2, ja.getArena());
                 statement.setInt(3, ja.getPlayed());
                 statement.setInt(4, ja.getWins());
                 statement.setInt(5, ja.getPlayed());
