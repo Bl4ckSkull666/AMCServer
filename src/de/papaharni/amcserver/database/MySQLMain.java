@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.bukkit.entity.Player;
 
 /**
@@ -55,21 +56,21 @@ public class MySQLMain {
         Connection con = null;
         try
         {
-            if(_plugin.getMyConfig()._smysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._smysql.get("use")):false) {
+            if(_plugin.getMyConfig()._smysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._smysql.get("use")):false) {
                 con = getConnect("server");
                 if(con == null)
                     _plugin.getLog().error("Konnte keine Verbindung zur Server Datenbank aufbauen.");
                 close(con);
             }
             
-            if(_plugin.getMyConfig()._fmysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._fmysql.get("use")):false) {
+            if(_plugin.getMyConfig()._fmysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._fmysql.get("use")):false) {
                 con = getConnect("forum");
                 if(con == null)
                     _plugin.getLog().error("Konnte keine Verbindung zur Forum Datenbank aufbauen.");
                 close(con);
             }
             
-            if(_plugin.getMyConfig()._hmysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._hmysql.get("use")):false) {
+            if(_plugin.getMyConfig()._hmysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._hmysql.get("use")):false) {
                 con = getConnect("homepage");
                 if(con == null)
                     _plugin.getLog().error("Konnte keine Verbindung zur Homepage Datenbank aufbauen.");
@@ -87,10 +88,10 @@ public class MySQLMain {
     {
         Connection con = null;
         try {
-            switch(t) {
+            switch(t.toLowerCase().trim()) {
                 case "server":
-                    if(_plugin.getMyConfig()._smysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._smysql.get("use")):false) {
-                        con = DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._smysql.get("host")
+                    if((_plugin.getMyConfig()._smysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._smysql.get("use")):false)) {
+                        return DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._smysql.get("host")
                             + ":" + _plugin.getMyConfig()._smysql.get("port")
                             + "/" + _plugin.getMyConfig()._smysql.get("data"),
                             _plugin.getMyConfig()._smysql.get("user"),
@@ -99,8 +100,8 @@ public class MySQLMain {
                     }
                     break;
                 case "forum":
-                    if(_plugin.getMyConfig()._fmysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._fmysql.get("use")):false) {
-                        con = DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._fmysql.get("host")
+                    if((_plugin.getMyConfig()._fmysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._fmysql.get("use")):false)) {
+                        return DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._fmysql.get("host")
                             + ":" + _plugin.getMyConfig()._fmysql.get("port")
                             + "/" + _plugin.getMyConfig()._fmysql.get("data"),
                             _plugin.getMyConfig()._fmysql.get("user"),
@@ -109,8 +110,8 @@ public class MySQLMain {
                     }
                     break;
                 case "homepage":
-                    if(_plugin.getMyConfig()._hmysql.containsKey("use")?Boolean.getBoolean(_plugin.getMyConfig()._hmysql.get("use")):false) {
-                        con = DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._hmysql.get("host")
+                    if((_plugin.getMyConfig()._hmysql.containsKey("use")?Boolean.parseBoolean(_plugin.getMyConfig()._hmysql.get("use")):false)) {
+                        return DriverManager.getConnection("jdbc:mysql://" + _plugin.getMyConfig()._hmysql.get("host")
                             + ":" + _plugin.getMyConfig()._hmysql.get("port")
                             + "/" + _plugin.getMyConfig()._hmysql.get("data"),
                             _plugin.getMyConfig()._hmysql.get("user"),
@@ -145,7 +146,7 @@ public class MySQLMain {
             statement.execute();
             statement.close();
             
-            statement = con.prepareStatement("INSERT INTO `mcjobs` (`username`.`jobname`,`level`,`exp`,`exp_up`,`rank`) VALUES (?,?.?,?,?,?)");
+            statement = con.prepareStatement("INSERT INTO `mcjobs` (`username`,`jobname`,`level`,`exp`,`exp_up`,`rank`) VALUES (?,?,?,?,?,?)");
             for(String jobname: PlayerCache.getPlayerJobs(p.getName())) {
                 statement.setString(1, p.getName());
                 statement.setString(2, jobname);
@@ -224,68 +225,11 @@ public class MySQLMain {
             con = getConnect(_plugin.getMyConfig()._tmysql.get("pvp"));
             if(con == null)
                 return;
-            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `mcjobs` (`username` varchar(32) NOT NULL, "
+            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `pvp` (`username` varchar(32) NOT NULL, "
                     + "`wins` int(11) NOT NULL DEFAULT '0', "
                     + "`lose` int(11) NOT NULL DEFAULT '0', "
-                    + "`exp_up` bigint(13) NOT NULL, "
-                    + "`rank` varchar(32) DEFAULT NULL, "
                     + "PRIMARY KEY (`username`)) "
                     + "ENGINE=MyISAM DEFAULT CHARSET=latin1"
-            );
-            statement.execute();
-            statement.close();
-        } catch(SQLException e) {
-            
-        } finally {
-            close(con);
-        }
-    }
-    
-    public String isPlayerNotActivatedYet(Player p) {
-        if(!_plugin.getMyConfig()._tmysql.containsKey("authme_activation"))
-            return "";
-        
-        String msg = "";
-        Connection con = null;
-        try {
-            con = getConnect(_plugin.getMyConfig()._tmysql.get("authme_activation"));
-            if(con == null)
-                return "";
-            
-            PreparedStatement statement = con.prepareStatement("SELECT `banMessage` FROM `authMe_activation` WHERE `name` = ? LIMIT 0,1");
-            statement.setString(1, p.getName());
-            ResultSet rset = statement.executeQuery();
-            if(rset.next()) {
-                msg = rset.getString("banMessage");
-            }
-            statement.close();
-        } catch(SQLException e) {
-            _plugin.getLog().error("Konnte nicht feststellen ob Account noch gesperrt ist.");
-            close(con);
-            return "";
-        } finally {
-            close(con);
-            return msg;
-        }
-    }
-    
-    public void setupActivationStructure() {
-        if(!_plugin.getMyConfig()._tmysql.containsKey("authme_activation"))
-            return;
-        
-        Connection con = null;
-        try {
-            con = getConnect(_plugin.getMyConfig()._tmysql.get("authme_activation"));
-            if(con == null)
-                return;
-            PreparedStatement statement = con.prepareStatement("CREATE TABLE IF NOT EXISTS `authMe_activation` (" 
-                + "  `id` int(11) NOT NULL,"
-                + "  `name` varchar(32) NOT NULL,"
-                + "  `activation` varchar(64) NOT NULL,"
-                + "  `status` enum('1','2') NOT NULL DEFAULT '1',"
-                + "  `banMessage` text NOT NULL,"
-                + "  PRIMARY KEY (`id`)"
-                + ") ENGINE=MyISAM DEFAULT CHARSET=latin1"
             );
             statement.execute();
             statement.close();

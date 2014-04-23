@@ -9,6 +9,7 @@ package de.papaharni.amcserver.scoreboards;
 import com.dmgkz.mcjobs.playerdata.PlayerCache;
 import com.pwn9.PwnFilter.util.PointManager;
 import de.papaharni.amcserver.AMCServer;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -33,21 +34,27 @@ public class SBStatistik {
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
         
-        Objective obj = board.getObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase());
+        String sb_name = p.getEntityId() + "AMCServer";
+        if(sb_name.length() > 16)
+            sb_name = sb_name.substring(0, 15);
         
-        if(obj != null && !obj.getDisplayName().contains("Statistik"))
-            obj.unregister();
-        
+        Objective obj = board.getObjective(sb_name.toLowerCase());
         if(obj == null)
-            obj = board.registerNewObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase(), "dummy");
+            obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
+        
+        String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
+        if(obj != null && !obj.getDisplayName().contains("Statistik")) {
+            obj.unregister();
+            obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
+            obj.setDisplayName(setColors(titleColor + "Statistik"));
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
         
         if(_plugin.getSBMain().getStatus(p)) {
-            if(obj.getDisplaySlot() != DisplaySlot.SIDEBAR)
-            {
+            if(obj.getDisplaySlot() == null)
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-                String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
-                obj.setDisplayName(setColors(titleColor + "Statistik"));
-            }
+            if(!obj.getDisplaySlot().equals(DisplaySlot.SIDEBAR))
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             
             //Economy Use
             int money = (int)Math.floor((float)_plugin.getEconomy().getBalance(p.getName()));
@@ -57,8 +64,7 @@ public class SBStatistik {
             }
             
             //McJobs Use
-            if(_plugin.isMcJobs() && PlayerCache.getJobCount(p.getName()) > 0)
-            {
+            if(_plugin.isMcJobs() && PlayerCache.getJobCount(p.getName()) > 0) {
                 String mcColor = _plugin.getMyConfig()._sbColors.containsKey("mcjobs")?_plugin.getMyConfig()._sbColors.get("mcjobs"):"";
                 
                 for(String jobname: PlayerCache.getPlayerJobs(p.getName())) {
@@ -67,6 +73,7 @@ public class SBStatistik {
                     obj.getScore(Bukkit.getOfflinePlayer(setColors(mcColor + jobname))).setScore(lvl);
                 }
             }
+            
             if(_plugin.isPwnFilter()) {
                 String pwnfColor = _plugin.getMyConfig()._sbColors.containsKey("pwnfilter")?_plugin.getMyConfig()._sbColors.get("pwnfilter"):"";
                 int points = PointManager.getInstance().getPlayerPoints(p).intValue();

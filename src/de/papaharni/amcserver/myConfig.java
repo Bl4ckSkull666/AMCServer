@@ -10,6 +10,7 @@ import de.papaharni.amcserver.util.Region;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -28,27 +29,27 @@ public class myConfig {
     public String _leaveMessage;
     
     //MySQL - Server
-    public HashMap<String, String> _smysql = new HashMap<>();
+    public HashMap<String, String> _smysql;
     
     //MySQL - Forum
-    public HashMap<String, String> _fmysql = new HashMap<>();
+    public HashMap<String, String> _fmysql;
     
     //MySQL - Homepage
-    public HashMap<String, String> _hmysql = new HashMap<>();
+    public HashMap<String, String> _hmysql;
     
     //Use MySQL Tables
-    public HashMap<String, String> _tmysql = new HashMap<>();
+    public HashMap<String, String> _tmysql;
     
     //Scoreboard Options
-    public HashMap<String, String> _sbOnWorld = new HashMap<>();
-    public HashMap<String, Boolean> _sbAvailable = new HashMap<>();
-    public HashMap<String, Boolean> _sbStatistik = new HashMap<>();
-    public HashMap<String, String> _sbColors = new HashMap<>();
+    public HashMap<String, String> _sbOnWorld;
+    public HashMap<String, Boolean> _sbAvailable;
+    public HashMap<String, Boolean> _sbStatistik;
+    public HashMap<String, String> _sbColors;
     
     //VoteRewards
-    public HashMap<String, String> _vrUseable = new HashMap<>();
+    public HashMap<String, String> _vrUseable;
     
-    public HashMap<String, String> _wTimes = new HashMap<>();
+    public HashMap<String, String> _wTimes;
     public long _wTimes_interval;
     
     //Protections
@@ -120,8 +121,11 @@ public class myConfig {
         _protect_entity_lightning_dmg = config.getInt("protect.entity.lightning_dmg_chance", 0);
         
         //Messages
-        _wTimes = getHashMapStrWorld(config, "tw_list");
-        _wTimes_interval = config.getLong("tw_interval", 200);
+        _wTimes = getHashMapStrWorld(config, "tw.list");
+        _wTimes_interval = config.getLong("tw.interval", 5);
+        
+        _mcjobs_save = config.getBoolean("mcjobs.save", false);
+        _mcjobs_interval = config.getInt("mcjobs.interval", 600);
     }
     
     private List<String> getWorldList(List<String> str_worlds) {
@@ -140,10 +144,10 @@ public class myConfig {
     private List<EntityType> getEntityList(List<String> str_list) {
         List<EntityType> etl = new ArrayList<>();
         for(String str: str_list) {
-            EntityType et = EntityType.valueOf(str);
-            if(et != null) {
+            try {
+                EntityType et = EntityType.valueOf(str.toUpperCase());
                 etl.add(et);
-            } else {
+            } catch(IllegalArgumentException e) {
                 _plugin.getLog().debug("Der angegebene EntityType " + str + " existiert nicht und wird Ignoriert.");
             }
         }
@@ -154,7 +158,7 @@ public class myConfig {
         HashMap<String, String> hm = new HashMap<>();
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
             if(Bukkit.getWorld(key) != null)
-                hm.put(key.toLowerCase(), config.getString(path + key));
+                hm.put(key.toLowerCase(), config.getString(path + "." + key));
             else
                 _plugin.getLog().debug("Die angebene Welt " + key + " existiert nicht und wird Ignoriert.");
         }
@@ -164,7 +168,7 @@ public class myConfig {
     private HashMap<String, String> getHashMapStr(Configuration config, String path) {
         HashMap<String, String> hm = new HashMap<>();
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
-            hm.put(key.toLowerCase(), config.getString(path + key));
+            hm.put(key.toLowerCase(), config.getString(path + "." + key));
         }
         return hm;
     }
@@ -172,7 +176,7 @@ public class myConfig {
     private HashMap<String, Boolean> getHashMapBol(Configuration config, String path) {
         HashMap<String, Boolean> hm = new HashMap<>();
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
-            hm.put(key.toLowerCase(), config.getBoolean(path + key, false));
+            hm.put(key.toLowerCase(), config.getBoolean(path + "." + key, false));
         }
         return hm;
     }
@@ -180,7 +184,7 @@ public class myConfig {
     private HashMap<String, Boolean> getHashMapItem(Configuration config, String path) {
         HashMap<String, Boolean> hm = new HashMap<>();
         for(String key : config.getConfigurationSection(path).getKeys(false)) {
-            hm.put(key.toLowerCase(), config.getBoolean(path + key, false));
+            hm.put(key.toLowerCase(), config.getBoolean(path + "." + key, false));
         }
         return hm;
     }

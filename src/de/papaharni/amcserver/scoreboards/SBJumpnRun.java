@@ -31,20 +31,27 @@ public class SBJumpnRun {
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
         
-        Objective obj = board.getObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase());
-
-        if(obj != null && !obj.getDisplayName().contains("Jump-Stats"))
-            obj.unregister();
-
-        if(obj == null)
-            obj = board.registerNewObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase(), "dummy");
+        String sb_name = p.getEntityId() + "AMCServer";
+        if(sb_name.length() > 16)
+            sb_name = sb_name.substring(0, 15);
         
-        if(!_plugin.getSBMain().getStatus(p)) {    
-            if(obj.getDisplaySlot() != DisplaySlot.SIDEBAR) {
+        Objective obj = board.getObjective(sb_name.toLowerCase());
+        if(obj == null)
+            obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
+        
+        String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
+        if(obj != null && !obj.getDisplayName().contains("Jump-Stats")) {
+            obj.unregister();
+            obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
+            obj.setDisplayName(setColors(titleColor + "Jump-Stats"));
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
+        
+        if(!_plugin.getSBMain().getStatus(p)) {
+            if(obj.getDisplaySlot() == null)
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-                String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
-                obj.setDisplayName(setColors(titleColor + "Jump-Stats"));
-            }
+            if(!obj.getDisplaySlot().equals(DisplaySlot.SIDEBAR))
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             
             int versuche = 0;
             int gewonnen = 0;

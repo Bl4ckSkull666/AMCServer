@@ -4,6 +4,7 @@ import de.papaharni.amcserver.AMCServer;
 import de.papaharni.amcserver.util.PvPCounters;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -20,7 +21,11 @@ public class onLeaveEvent implements Listener {
     
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        event.setQuitMessage(_plugin.getMyConfig()._leaveMessage.replaceAll("%player%", event.getPlayer().getName()));
         _plugin.getPvPCs().savePvPCounter(event.getPlayer().getName());        
+    }
+    
+    @EventHandler
+    public void onPlayereKick(PlayerKickEvent event) {
+        _plugin.getPvPCs().savePvPCounter(event.getPlayer().getName());
     }
 }

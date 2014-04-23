@@ -35,7 +35,7 @@ public class MySQLPvP {
             if(con == null)
                 return pvp;
             
-            PreparedStatement statement = con.prepareStatement("SELECT `wins`,`lose` FROM `pvpreward` WHERE `username` = ? LIMIT 0,1");
+            PreparedStatement statement = con.prepareStatement("SELECT `wins`,`lose` FROM `pvp` WHERE `username` = ? LIMIT 0,1");
             statement.setString(1, p);
             ResultSet rset = statement.executeQuery();
             if(rset.next()) {
@@ -65,7 +65,7 @@ public class MySQLPvP {
             if(con == null)
                 return pvp;
             
-            PreparedStatement statement = con.prepareStatement("INSERT INTO `pvprewards` SET (`username``wins`,`lose`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `wins`=?, `lose`=?");
+            PreparedStatement statement = con.prepareStatement("INSERT INTO `pvp` SET (`username``wins`,`lose`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `wins`=?, `lose`=?");
             statement.setString(1, p);
             statement.setInt(2, pc.getWins());
             statement.setInt(3, pc.getLose());

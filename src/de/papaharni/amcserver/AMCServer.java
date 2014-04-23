@@ -38,6 +38,7 @@ public class AMCServer extends JavaPlugin {
     private JumpPlayer _jumps;
     private Regions _regions;
     private HashMap<String, Long> _playerOnlineSince = new HashMap<>();
+    private Tasks _allTasks;
     
     public static AMCServer getInstance() {
         return _instance;
@@ -45,23 +46,20 @@ public class AMCServer extends JavaPlugin {
      
     @Override
     public void onEnable() {
-        _instance = this;
-        
         _pvpcs = new PvPCounters(this);
         _regions = new Regions(this);
         
         Configuration configuration = this.getConfig();
-        if(!this.getDataFolder().exists())
-        {
+        if(!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
             configuration.options().copyDefaults(true);
         }
-        
         _config = new myConfig(configuration, this);
         this.saveConfig();
         
         _debugMode = _config.debug;
         
+        _mysql = new MySQLMain(this);
         checkExternPlugins();
                 
         _protect = new protection(this);
@@ -70,6 +68,8 @@ public class AMCServer extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new onJoinEvent(this), this);
         pm.registerEvents(new onLeaveEvent(this), this);
+        pm.registerEvents(new PlayerMove(this), this);
+        pm.registerEvents(new PlayerTeleport(this), this);
         pm.registerEvents(new InventoryOpen(this), this);
         pm.registerEvents(new InventoryClose(this), this);
         pm.registerEvents(new EntityDamage(this), this);
@@ -80,14 +80,15 @@ public class AMCServer extends JavaPlugin {
         this.getCommand("nachtsicht").setExecutor(new nachtsicht(this));
         this.getCommand("unsichtbar").setExecutor(new unsichtbar(this));
         
-        _mysql = new MySQLMain(this);
         _sb = new SBMain(this);
         _jumps = new JumpPlayer(this);
+        _allTasks = new Tasks(this);
+        _instance = this;
     }
     
     @Override
     public void onDisable() {
-        
+        _allTasks.cancelTask("all");
     }
     
     public myConfig getMyConfig() {
@@ -102,8 +103,7 @@ public class AMCServer extends JavaPlugin {
         return _logger;
     }
     
-    public Economy getEconomy()
-    {
+    public Economy getEconomy() {
         return economy;
     }
     

@@ -67,7 +67,7 @@ public class PvPCounters {
         if(isPvPCounter(uname))
             return _pvpcounts.get(uname);
         else
-            return null;
+            return new PvPCounter("James");
     }
     
     public void loadPvPCounter(String p) {

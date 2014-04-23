@@ -67,12 +67,12 @@ votereward:
 pvp:
   use: true
   onWorld:
-    - PvPWelt
+  - PvPWelt
 protect:
   onuse:
     use: true
     worlds:
-      - PVPWelt
+    - PVPWelt
     furnace:
       use: true
       useable: '&2Der Ofen ist nun wieder Freigegeben.'
@@ -86,10 +86,10 @@ protect:
   entity:
     use: true
     list:
-      - Villager
-      - Irongolem
+    - Villager
+    - Irongolem
     worlds:
-      - PvPWelt
+    - PvPWelt
     msg: '&cEs ist dir nicht erlaubt %entity% anzugreifen.'
     lightning: true
     lightning_dmg_chance: 50
@@ -107,3 +107,7 @@ jumparenas:
       x: 125
       y: 120
       z: 105
+tw:
+  list:
+    world: '24h'
+  interval: 5

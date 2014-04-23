@@ -9,6 +9,7 @@ package de.papaharni.amcserver.util;
 import de.papaharni.amcserver.AMCServer;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,74 +19,123 @@ import org.bukkit.scheduler.BukkitTask;
  *
  * @author Pappi
  */
-public class Tasks {
-    private AMCServer _plugin;
+public final class Tasks {
+    private final AMCServer _plugin;
+    private BukkitTask _mcjobs;
+    private BukkitTask _scoreboard;
+    private BukkitTask _worldTimer;
     
     public Tasks(AMCServer plugin) {
         _plugin = plugin;
-        startMcJobsUpdater();
-        startScoreboardUpdater();
-        startWorldTimeUpdater();
+        _mcjobs = startMcJobsUpdater();
+        if(_mcjobs == null)
+            _plugin.getLogger().log(Level.INFO, "MCJobs Task hat einen Fehler und konnte nicht gestartet werde.");
+        _scoreboard = startScoreboardUpdater();
+        if(_scoreboard == null)
+            _plugin.getLogger().log(Level.INFO, "Scoreboard Task hat einen Fehler und konnte nicht gestartet werde.");
+        _worldTimer = startWorldTimeUpdater();
+        if(_worldTimer == null)
+            _plugin.getLogger().log(Level.INFO, "WeltTimer Task hat einen Fehler und konnte nicht gestartet werde.");
     }
     
-    public void startScoreboardUpdater() {
-        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateScoreboard(), (_plugin.getMyConfig()._mcjobs_interval*20));
+    public void cancelTask(String taskname) {
+        switch(taskname) {
+            case "mcjobs":
+                _mcjobs.cancel();
+                break;
+            case "scoreboard":
+                _scoreboard.cancel();
+                break;
+            case "worldtimer":
+                _worldTimer.cancel();
+                break;
+            default:
+                _mcjobs.cancel();
+                _scoreboard.cancel();
+                _worldTimer.cancel();
+                break;
+        }
+    }
+    
+    public BukkitTask startScoreboardUpdater() {
+        //return Bukkit.getServer().getScheduler().runTaskTimer(_plugin, new updateScoreboard(), (20*20),(_plugin.getMyConfig()._mcjobs_interval*20));
+        return Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateScoreboard(), (20*20));
     }
     
     public class updateScoreboard implements Runnable {
         public void run() {
-            for(Player p: _plugin.getServer().getOnlinePlayers()) {
-                if(_plugin.getSBMain().getStatus(p))
-                    _plugin.getSBMain().setScoreboard(p);
+            try {
+                for(Player p: _plugin.getServer().getOnlinePlayers()) {
+                    if(_plugin.getSBMain().getStatus(p))
+                        _plugin.getSBMain().setScoreboard(p, p.getLocation());
+                }
+            } catch(Exception e) {
+                _plugin.getLog().error("Fehler im Scoreboard Update Task", e);
             }
-            startScoreboardUpdater();
+            if(_scoreboard != null)
+                _scoreboard.cancel();
+            _scoreboard = startScoreboardUpdater();
         }
     }
     
-    public void startMcJobsUpdater() {
-        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateMcJobs(), (_plugin.getMyConfig()._mcjobs_interval*20));
+    public BukkitTask startMcJobsUpdater() {
+        //return Bukkit.getServer().getScheduler().runTaskTimer(_plugin, new updateMcJobs(), (20*20), (_plugin.getMyConfig()._mcjobs_interval*20));
+        return Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateMcJobs(), (_plugin.getMyConfig()._mcjobs_interval*20));
     }
     
     public class updateMcJobs implements Runnable {
         public void run() {
-            for(Player p: _plugin.getServer().getOnlinePlayers()) {
-                _plugin.getMySQL().setMcJobsByPlayer(p);
+            try {
+                for(Player p: _plugin.getServer().getOnlinePlayers()) {
+                    _plugin.getMySQL().setMcJobsByPlayer(p);
+                }
+            } catch(Exception e) {
+                _plugin.getLog().error("Fehler im Jobs Update Task", e);
             }
-            startMcJobsUpdater();
+            if(_mcjobs != null)
+                _mcjobs.cancel();
+            _mcjobs = startMcJobsUpdater();
         }
     }
     
-    public void startWorldTimeUpdater() {
-        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateWorldTime(), (_plugin.getMyConfig()._mcjobs_interval*20));
+    public BukkitTask startWorldTimeUpdater() {
+        //return Bukkit.getServer().getScheduler().runTaskTimer(_plugin, new updateWorldTime(), (20*20), (_plugin.getMyConfig()._wTimes_interval*20));
+        return Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(_plugin, new updateWorldTime(), (_plugin.getMyConfig()._wTimes_interval*20));
     }
     
     public class updateWorldTime implements Runnable {
         public void run() {
-            for (Map.Entry<String, String> e : _plugin.getMyConfig()._wTimes.entrySet()) {
-                if(Bukkit.getWorld(e.getKey()) == null)
-                    _plugin.getLog().error("");
-                else {
-                    World w = Bukkit.getWorld(e.getKey());
-                    if(w == null)
-                                break;
-                    String[] sa = e.getValue().split(";");
-                    switch(sa[0]) {
-                        case "24h":
-                            //format 24h
-                            setWorldToCurrentTime(w);
+            try {
+                for (Map.Entry<String, String> e : _plugin.getMyConfig()._wTimes.entrySet()) {
+                    if(Bukkit.getWorld(e.getKey()) == null)
+                        _plugin.getLog().error("");
+                    else {
+                        World w = Bukkit.getWorld(e.getKey());
+                        if(w == null)
                             break;
-                        case "time":
-                            //Format time;15:00
-                            if(sa.length <= 1)
+                        String[] sa = e.getValue().split("\\;");
+                        switch(sa[0]) {
+                            case "24h":
+                                //format 24h
+                                setWorldToCurrentTime(w);
                                 break;
-                            setWorldToTime(w, sa[1]);
-                        default:
-                            break;
-                            
+                            case "time":
+                                //Format time;15:00
+                                if(sa.length <= 1)
+                                    break;
+                                setWorldToTime(w, sa[1]);
+                            default:
+                                break;
+
+                        }
                     }
                 }
+            } catch(Exception e) {
+                _plugin.getLog().error("Fehler im Welt Update Task", e);
             }
-            startWorldTimeUpdater();
+            if(_worldTimer != null)
+                _worldTimer.cancel();
+            _worldTimer = startWorldTimeUpdater();
         }
     }
     
@@ -99,6 +149,7 @@ public class Tasks {
 
         if(today.getTimeInMillis() >= System.currentTimeMillis())
             return;
+        
         long diff = System.currentTimeMillis()-today.getTimeInMillis();
         long ticks = (long)Math.round(240*((100/86400)*(double)diff));
         if(ticks > 6000)

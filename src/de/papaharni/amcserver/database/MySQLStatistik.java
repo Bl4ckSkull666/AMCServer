@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.bukkit.entity.Player;
 
 /**
@@ -31,7 +32,7 @@ public class MySQLStatistik {
         
         Connection con = null;
         try {
-            con = _plugin.getMySQL().getConnect(_plugin.getMyConfig()._tmysql.get("mcjobs"));
+            con = _plugin.getMySQL().getConnect(_plugin.getMyConfig()._tmysql.get("bb1_users"));
             if(con == null)
                 return vspf;
             

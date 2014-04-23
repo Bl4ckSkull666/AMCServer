@@ -8,6 +8,8 @@ package de.papaharni.amcserver.scoreboards;
 
 import de.papaharni.amcserver.AMCServer;
 import java.util.HashMap;
+import java.util.logging.Level;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -43,10 +45,12 @@ public class SBMain {
         return _visible.containsKey(p.getName())?_visible.get(p.getName()):false;
     }
     
-    public void setScoreboard(Player p) {
+    public void setScoreboard(Player p, Location loc) {
         if(getStatus(p)) {
-            if(_plugin.getMyConfig()._sbOnWorld.containsKey(p.getLocation().getWorld().getName().toLowerCase())) {
-                setScoreboard(p, _plugin.getMyConfig()._sbOnWorld.get(p.getLocation().getWorld().getName().toLowerCase()));
+            if(loc == null)
+                loc = p.getLocation();
+            if(_plugin.getMyConfig()._sbOnWorld.containsKey(loc.getWorld().getName().toLowerCase())) {
+                setScoreboard(p, _plugin.getMyConfig()._sbOnWorld.get(loc.getWorld().getName().toLowerCase()));
             } else if(_plugin.getMyConfig()._sbOnWorld.containsKey("default")) {
                 setScoreboard(p, _plugin.getMyConfig()._sbOnWorld.get("default"));
             } else {
@@ -79,7 +83,11 @@ public class SBMain {
         if(board == null)
             return;
         
-        Objective obj = board.getObjective((p.getEntityId() + "AMCServer").substring(0, 15).toLowerCase());
+        String sb_name = p.getEntityId() + "AMCServer";
+        if(sb_name.length() > 16)
+            sb_name = sb_name.substring(0, 15);
+        
+        Objective obj = board.getObjective(sb_name.toLowerCase());
         if(obj != null)
             obj.unregister();
         board.clearSlot(DisplaySlot.SIDEBAR);

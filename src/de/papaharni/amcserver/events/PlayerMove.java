@@ -9,13 +9,14 @@ package de.papaharni.amcserver.events;
 import de.papaharni.amcserver.AMCServer;
 import de.papaharni.amcserver.util.Region;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
  * @author Pappi
  */
-public class PlayerMove {
+public class PlayerMove implements Listener {
     private final AMCServer _plugin;
     
     public PlayerMove(AMCServer plugin) {
@@ -24,6 +25,9 @@ public class PlayerMove {
     
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if(!event.getFrom().getWorld().getName().equalsIgnoreCase(event.getTo().getWorld().getName()))
+            _plugin.getSBMain().setScoreboard(event.getPlayer(), event.getTo());
+        
         if(_plugin.getRegions().getRegionListByWorld(event.getFrom().getWorld().getName()).isEmpty())
             return;
         
