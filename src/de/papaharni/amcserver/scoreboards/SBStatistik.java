@@ -9,7 +9,6 @@ package de.papaharni.amcserver.scoreboards;
 import com.dmgkz.mcjobs.playerdata.PlayerCache;
 import com.pwn9.PwnFilter.util.PointManager;
 import de.papaharni.amcserver.AMCServer;
-import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,15 +20,9 @@ import org.bukkit.scoreboard.Scoreboard;
  *
  * @author Pappi
  */
-public class SBStatistik {
+public final class SBStatistik {
     
-    private AMCServer _plugin;
-    
-    public SBStatistik(AMCServer plugin) {
-        _plugin = plugin;
-    }
-    
-    public void setScoreboard(Player p) {
+    public static void setScoreboard(Player p) {
         Scoreboard board = p.getScoreboard();
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -42,7 +35,7 @@ public class SBStatistik {
         if(obj == null)
             obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
         
-        String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
+        String titleColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("statistik")?AMCServer.getInstance().getMyConfig()._sbColors.get("statistik"):"";
         if(obj != null && !obj.getDisplayName().contains("Statistik")) {
             obj.unregister();
             obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
@@ -50,22 +43,22 @@ public class SBStatistik {
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         
-        if(_plugin.getSBMain().getStatus(p)) {
+        if(AMCServer.getInstance().getSBMain().getStatus(p)) {
             if(obj.getDisplaySlot() == null)
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             if(!obj.getDisplaySlot().equals(DisplaySlot.SIDEBAR))
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             
             //Economy Use
-            int money = (int)Math.floor((float)_plugin.getEconomy().getBalance(p.getName()));
-            String ecoColor = _plugin.getMyConfig()._sbColors.containsKey("money")?_plugin.getMyConfig()._sbColors.get("money"):"";
-            if(obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + _plugin.getEconomy().currencyNamePlural()))).getScore() != money) {
-                obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + _plugin.getEconomy().currencyNamePlural()))).setScore(money);
+            int money = (int)Math.floor((float)AMCServer.getInstance().getEconomy().getBalance(p.getName()));
+            String ecoColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("money")?AMCServer.getInstance().getMyConfig()._sbColors.get("money"):"";
+            if(obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + AMCServer.getInstance().getEconomy().currencyNamePlural()))).getScore() != money) {
+                obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + AMCServer.getInstance().getEconomy().currencyNamePlural()))).setScore(money);
             }
             
             //McJobs Use
-            if(_plugin.isMcJobs() && PlayerCache.getJobCount(p.getName()) > 0) {
-                String mcColor = _plugin.getMyConfig()._sbColors.containsKey("mcjobs")?_plugin.getMyConfig()._sbColors.get("mcjobs"):"";
+            if(AMCServer.getInstance().isMcJobs() && PlayerCache.getJobCount(p.getName()) > 0) {
+                String mcColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("mcjobs")?AMCServer.getInstance().getMyConfig()._sbColors.get("mcjobs"):"";
                 
                 for(String jobname: PlayerCache.getPlayerJobs(p.getName())) {
                     int lvl = PlayerCache.getJobLevel(p.getName(), jobname);
@@ -74,25 +67,25 @@ public class SBStatistik {
                 }
             }
             
-            if(_plugin.isPwnFilter()) {
-                String pwnfColor = _plugin.getMyConfig()._sbColors.containsKey("pwnfilter")?_plugin.getMyConfig()._sbColors.get("pwnfilter"):"";
+            if(AMCServer.getInstance().isPwnFilter()) {
+                String pwnfColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("pwnfilter")?AMCServer.getInstance().getMyConfig()._sbColors.get("pwnfilter"):"";
                 int points = PointManager.getInstance().getPlayerPoints(p).intValue();
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(pwnfColor + "Wort-Punkte"))).setScore(points);
             }
             
-            if(_plugin.getPlayerOnlineSince().containsKey(p.getName())) {
-                String onColor = _plugin.getMyConfig()._sbColors.containsKey("online")?_plugin.getMyConfig()._sbColors.get("online"):"";
-                long onlineMSecs = System.currentTimeMillis()-_plugin.getPlayerOnlineSince().get(p.getName());
+            if(AMCServer.getInstance().getPlayerOnlineSince().containsKey(p.getName())) {
+                String onColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("online")?AMCServer.getInstance().getMyConfig()._sbColors.get("online"):"";
+                long onlineMSecs = System.currentTimeMillis()-AMCServer.getInstance().getPlayerOnlineSince().get(p.getName());
                 int minOnline = (int)((onlineMSecs/1000)/60);
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(onColor + "Onl.Minuten"))).setScore(minOnline);
             }
             
-            if(_plugin.getMyConfig()._tmysql.containsKey("bb1_users")) {
-                int[] fvsp = _plugin.getMySQL().getStats().getFromBB(p);
-                String fColor = _plugin.getMyConfig()._sbColors.containsKey("foins")?_plugin.getMyConfig()._sbColors.get("foins"):"";
-                String spbColor = _plugin.getMyConfig()._sbColors.containsKey("sparbuch")?_plugin.getMyConfig()._sbColors.get("sparbuch"):"";
-                String vColor = _plugin.getMyConfig()._sbColors.containsKey("votes")?_plugin.getMyConfig()._sbColors.get("votes"):"";
-                String spColor = _plugin.getMyConfig()._sbColors.containsKey("spenden")?_plugin.getMyConfig()._sbColors.get("spenden"):"";
+            if(AMCServer.getInstance().getMyConfig()._tmysql.containsKey("bb1_users")) {
+                int[] fvsp = AMCServer.getInstance().getMySQL().getStats().getFromBB(p);
+                String fColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("foins")?AMCServer.getInstance().getMyConfig()._sbColors.get("foins"):"";
+                String spbColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("sparbuch")?AMCServer.getInstance().getMyConfig()._sbColors.get("sparbuch"):"";
+                String vColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("votes")?AMCServer.getInstance().getMyConfig()._sbColors.get("votes"):"";
+                String spColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("spenden")?AMCServer.getInstance().getMyConfig()._sbColors.get("spenden"):"";
 
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(fColor + "Foins"))).setScore(fvsp[0]);
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(spbColor + "Sparbuch"))).setScore(fvsp[1]);
@@ -109,7 +102,7 @@ public class SBStatistik {
         }
     }
     
-    public String setColors(String str) {
+    public static String setColors(String str) {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 }

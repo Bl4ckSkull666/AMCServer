@@ -19,14 +19,8 @@ import org.bukkit.scoreboard.Scoreboard;
  *
  * @author Pappi
  */
-public class SBPvP {
-    private AMCServer _plugin;
-    
-    public SBPvP(AMCServer plugin) {
-        _plugin = plugin;
-    }
-    
-    public void setScoreboard(Player p) {
+public final class SBPvP {
+    public static void setScoreboard(Player p) {
         Scoreboard board = p.getScoreboard();
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -39,7 +33,7 @@ public class SBPvP {
         if(obj == null)
             obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
         
-        String titleColor = _plugin.getMyConfig()._sbColors.containsKey("statistik")?_plugin.getMyConfig()._sbColors.get("statistik"):"";
+        String titleColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("statistik")?AMCServer.getInstance().getMyConfig()._sbColors.get("statistik"):"";
         if(obj != null && !obj.getDisplayName().contains("PvP-Stats")) {
             obj.unregister();
             obj = board.registerNewObjective(sb_name.toLowerCase(), "dummy");
@@ -47,43 +41,43 @@ public class SBPvP {
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         
-        if(_plugin.getSBMain().getStatus(p)) {
+        if(AMCServer.getInstance().getSBMain().getStatus(p)) {
             if(obj.getDisplaySlot() == null)
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             if(!obj.getDisplaySlot().equals(DisplaySlot.SIDEBAR))
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             
-            String winColor = _plugin.getMyConfig()._sbColors.containsKey("wins")?_plugin.getMyConfig()._sbColors.get("wins"):"";
-            String loseColor = _plugin.getMyConfig()._sbColors.containsKey("lose")?_plugin.getMyConfig()._sbColors.get("lose"):"";
-            String scoColor = _plugin.getMyConfig()._sbColors.containsKey("score")?_plugin.getMyConfig()._sbColors.get("score"):"";
+            String winColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("wins")?AMCServer.getInstance().getMyConfig()._sbColors.get("wins"):"";
+            String loseColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("lose")?AMCServer.getInstance().getMyConfig()._sbColors.get("lose"):"";
+            String scoColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("score")?AMCServer.getInstance().getMyConfig()._sbColors.get("score"):"";
             
-            obj.getScore(Bukkit.getOfflinePlayer(setColors(winColor + "Gewonnen"))).setScore(_plugin.getPvPCs().getPvPCounter(p.getName()).getWins());
-            obj.getScore(Bukkit.getOfflinePlayer(setColors(loseColor + "Verloren"))).setScore(_plugin.getPvPCs().getPvPCounter(p.getName()).getLose());
-            obj.getScore(Bukkit.getOfflinePlayer(setColors(scoColor + "Score"))).setScore(_plugin.getPvPCs().getPvPCounter(p.getName()).getScore());
+            obj.getScore(Bukkit.getOfflinePlayer(setColors(winColor + "Gewonnen"))).setScore(AMCServer.getInstance().getPvPCs().getPvPCounter(p.getName()).getWins());
+            obj.getScore(Bukkit.getOfflinePlayer(setColors(loseColor + "Verloren"))).setScore(AMCServer.getInstance().getPvPCs().getPvPCounter(p.getName()).getLose());
+            obj.getScore(Bukkit.getOfflinePlayer(setColors(scoColor + "Score"))).setScore(AMCServer.getInstance().getPvPCs().getPvPCounter(p.getName()).getScore());
             
             //Economy Use
-            int money = (int)Math.floor((float)_plugin.getEconomy().getBalance("pvp" + p.getName()));
-            String ecoColor = _plugin.getMyConfig()._sbColors.containsKey("pvpm")?_plugin.getMyConfig()._sbColors.get("pvpm"):"";
+            int money = (int)Math.floor((float)AMCServer.getInstance().getEconomy().getBalance("pvp" + p.getName()));
+            String ecoColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("pvpm")?AMCServer.getInstance().getMyConfig()._sbColors.get("pvpm"):"";
             if(obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + "PvP-Muenzen"))).getScore() != money) {
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(ecoColor + "PvP-Muenzen"))).setScore(money);
             }
             
-            if(_plugin.isPwnFilter()) {
-                String pwnfColor = _plugin.getMyConfig()._sbColors.containsKey("pwnfilter")?_plugin.getMyConfig()._sbColors.get("pwnfilter"):"";
+            if(AMCServer.getInstance().isPwnFilter()) {
+                String pwnfColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("pwnfilter")?AMCServer.getInstance().getMyConfig()._sbColors.get("pwnfilter"):"";
                 int points = PointManager.getInstance().getPlayerPoints(p).intValue();
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(pwnfColor + "Wort-Punkte"))).setScore(points);
             }
             
-            if(_plugin.getPlayerOnlineSince().containsKey(p.getName())) {
-                String onColor = _plugin.getMyConfig()._sbColors.containsKey("online")?_plugin.getMyConfig()._sbColors.get("online"):"";
-                long onlineMSecs = System.currentTimeMillis()-_plugin.getPlayerOnlineSince().get(p.getName());
+            if(AMCServer.getInstance().getPlayerOnlineSince().containsKey(p.getName())) {
+                String onColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("online")?AMCServer.getInstance().getMyConfig()._sbColors.get("online"):"";
+                long onlineMSecs = System.currentTimeMillis()-AMCServer.getInstance().getPlayerOnlineSince().get(p.getName());
                 int minOnline = (int)((onlineMSecs/1000)/60);
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(onColor + "Onl.Minuten"))).setScore(minOnline);
             }
             
-            if(_plugin.getMyConfig()._tmysql.containsKey("bb1_users")) {
-                int[] fvsp = _plugin.getMySQL().getStats().getFromBB(p);
-                String vColor = _plugin.getMyConfig()._sbColors.containsKey("votes")?_plugin.getMyConfig()._sbColors.get("votes"):"";
+            if(AMCServer.getInstance().getMyConfig()._tmysql.containsKey("bb1_users")) {
+                int[] fvsp = AMCServer.getInstance().getMySQL().getStats().getFromBB(p);
+                String vColor = AMCServer.getInstance().getMyConfig()._sbColors.containsKey("votes")?AMCServer.getInstance().getMyConfig()._sbColors.get("votes"):"";
                 obj.getScore(Bukkit.getOfflinePlayer(setColors(vColor + "Vote-Punkte"))).setScore(fvsp[2]);
             }
 
@@ -96,7 +90,7 @@ public class SBPvP {
         }
     }
     
-    public String setColors(String str) {
+    public static String setColors(String str) {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 }

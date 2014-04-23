@@ -80,7 +80,6 @@ public class AMCServer extends JavaPlugin {
         this.getCommand("nachtsicht").setExecutor(new nachtsicht(this));
         this.getCommand("unsichtbar").setExecutor(new unsichtbar(this));
         
-        _sb = new SBMain(this);
         _jumps = new JumpPlayer(this);
         _allTasks = new Tasks(this);
         _instance = this;
