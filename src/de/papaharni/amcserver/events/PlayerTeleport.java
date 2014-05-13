@@ -32,12 +32,12 @@ public class PlayerTeleport implements Listener {
         
         if(_plugin.getRegions().getRegionListByWorld(event.getFrom().getWorld().getName()).isEmpty())
             return;
-        
+        /*
         for(Region r: _plugin.getRegions().getRegionListByWorld(event.getFrom().getWorld().getName())) {
             if(r.isInside(event.getFrom()) && !r.isInside(event.getTo())) {
                 //Verlasse Bereich
                 if(r.isJumpRegion())
-                    _plugin.getJumps().getArena(event.getPlayer(), r.getName()).addPlayed(1);
+                    _plugin.getJumps().getArena(event.getPlayer().getName(), r.getName()).addPlayed(1);
                 if(r.isLeaveMessage())
                     event.getPlayer().sendMessage(r.getLeaveMessage());
                 if(r.isSetTeleport() && !r.isTeleportOnEnter())
@@ -50,5 +50,6 @@ public class PlayerTeleport implements Listener {
                     event.getPlayer().teleport(r.getTeleport());
             }
         }
+        */
     }
 }

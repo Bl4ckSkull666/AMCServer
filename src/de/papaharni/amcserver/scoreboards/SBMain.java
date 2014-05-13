@@ -52,7 +52,7 @@ public final class SBMain {
             case "pvp":
               SBPvP.setScoreboard(p);
               break;
-            case "jumpnrun":
+            case "jnr":
               SBJumpnRun.setScoreboard(p);
               break;
             case "statistik":

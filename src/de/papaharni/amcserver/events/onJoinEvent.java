@@ -23,6 +23,7 @@ public class onJoinEvent implements Listener {
         _plugin.getSBMain().setVisible(event.getPlayer());
         _plugin.getSBMain().setScoreboard(event.getPlayer(), event.getPlayer().getLocation());
         _plugin.getPvPCs().loadPvPCounter(event.getPlayer().getName());
+        _plugin.getJumps().loadArenas(event.getPlayer().getName());
         _plugin.getPlayerOnlineSince().put(event.getPlayer().getName(), System.currentTimeMillis());
     }
 }

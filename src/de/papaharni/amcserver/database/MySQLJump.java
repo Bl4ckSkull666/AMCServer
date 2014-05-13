@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -35,11 +36,12 @@ public class MySQLJump {
             if(con == null)
                 return jal;
             
-            PreparedStatement statement = con.prepareStatement("SELECT `arena`,`wins`,`attempts` FROM `jumpnruns` WHERE `username` = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT `arena`,`played`,`wins` FROM `jumpnruns` WHERE `username` = ?");
             statement.setString(1, p);
             ResultSet rset = statement.executeQuery();
             while(rset.next()) {
-                JumpArena ja = new JumpArena(rset.getString("arena"), rset.getInt("attepmts"), rset.getInt("wins"));
+                AMCServer.getInstance().getLogger().log(Level.INFO, p + " : Lade " + rset.getString("arena") + " mit " + rset.getInt("played") + " gespielten und " + rset.getInt("wins") + " gewonnen runden.");
+                JumpArena ja = new JumpArena(rset.getString("arena"), rset.getInt("played"), rset.getInt("wins"));
                 jal.add(ja);
             }
             rset.close();
@@ -67,7 +69,7 @@ public class MySQLJump {
             if(con == null)
                 return;
             
-            PreparedStatement statement = con.prepareStatement("INSERT INTO `jumpnruns` (`username`,`arena`,`attempts`,`wins`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `attempts`=?,`wins`=?");
+            PreparedStatement statement = con.prepareStatement("INSERT INTO `jumpnruns` (`username`,`arena`,`played`,`wins`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `played`=?,`wins`=?");
             for(JumpArena ja: jal) {
                 statement.setString(1, p);
                 statement.setString(2, ja.getArena());

@@ -9,6 +9,7 @@ package de.papaharni.amcserver.scoreboards;
 import com.dmgkz.mcjobs.playerdata.PlayerCache;
 import com.pwn9.PwnFilter.util.PointManager;
 import de.papaharni.amcserver.AMCServer;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,6 +24,12 @@ import org.bukkit.scoreboard.Scoreboard;
 public final class SBStatistik {
     
     public static void setScoreboard(Player p) {
+        if(!AMCServer.getInstance().getMyConfig()._sbAvailable.containsKey("statistik"))
+            return;
+        
+        if(!AMCServer.getInstance().getMyConfig()._sbAvailable.get("statistik"))
+            return;
+        
         Scoreboard board = p.getScoreboard();
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();

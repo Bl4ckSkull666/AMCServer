@@ -107,9 +107,7 @@ public final class Tasks {
         public void run() {
             try {
                 for (Map.Entry<String, String> e : _plugin.getMyConfig()._wTimes.entrySet()) {
-                    if(Bukkit.getWorld(e.getKey()) == null)
-                        _plugin.getLog().error("");
-                    else {
+                    if(Bukkit.getWorld(e.getKey()) != null) {
                         World w = Bukkit.getWorld(e.getKey());
                         if(w == null)
                             break;
@@ -140,23 +138,9 @@ public final class Tasks {
     }
     
     private void setWorldToCurrentTime(World w) {
-        Calendar today = Calendar.getInstance();
-        today.setTimeInMillis(System.currentTimeMillis());
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.MILLISECOND, 0);
-
-        if(today.getTimeInMillis() >= System.currentTimeMillis())
-            return;
-        
-        long diff = System.currentTimeMillis()-today.getTimeInMillis();
-        long ticks = (long)Math.round(240*((100/86400)*(double)diff));
-        if(ticks > 6000)
-            ticks -= 6000;
-        else
-            ticks += 18000;
-        w.setTime(ticks);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        setWorldTime(w, cal);
     }
     
     private void setWorldToTime(World w, String strTime) {
@@ -167,17 +151,19 @@ public final class Tasks {
         if(!isNumeric(t[0]) || !isNumeric(t[1]))
             return;
         
-        Calendar today = Calendar.getInstance();
-        today.setTimeInMillis(System.currentTimeMillis());
-        today.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
-        today.set(Calendar.MINUTE, Integer.parseInt(t[1]));
-        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.MILLISECOND, 0);
-
-        if(today.getTimeInMillis() >= System.currentTimeMillis())
-            return;
-        long diff = System.currentTimeMillis()-today.getTimeInMillis();
-        long ticks = (long)Math.round(240*((100/86400)*(double)diff));
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        setWorldTime(w, cal);
+    }
+    
+    private void setWorldTime(World w, Calendar cal) {
+        long timeseconds = cal.get(Calendar.SECOND)+(60*cal.get(Calendar.MINUTE))+(60*60*cal.get(Calendar.HOUR_OF_DAY));
+        float pc = ((100F/86400F)*(float)timeseconds);
+        int ticks = (int)((24000/100)*pc);
         if(ticks > 6000)
             ticks -= 6000;
         else

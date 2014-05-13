@@ -198,7 +198,7 @@ public class myConfig {
             String maxY = config.getString(path + key + ".max.y");
             String maxZ = config.getString(path + key + ".max.z");
             String world = config.getString(path + key + ".world");
-            
+
             World w = Bukkit.getWorld(world);
             
             if(w != null && isNumeric(minX) && isNumeric(minY) && isNumeric(minZ) && isNumeric(maxX) && isNumeric(maxY) && isNumeric(maxZ)) {

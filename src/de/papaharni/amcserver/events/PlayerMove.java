@@ -30,7 +30,7 @@ public class PlayerMove implements Listener {
         
         if(_plugin.getRegions().getRegionListByWorld(event.getFrom().getWorld().getName()).isEmpty())
             return;
-        
+        /*
         for(Region r: _plugin.getRegions().getRegionListByWorld(event.getFrom().getWorld().getName())) {
             if(r.isInside(event.getFrom()) && !r.isInside(event.getTo())) {
                 //Verlasse Bereich
@@ -48,5 +48,6 @@ public class PlayerMove implements Listener {
                     event.getPlayer().teleport(r.getTeleport());
             }
         }
+        */
     }
 }

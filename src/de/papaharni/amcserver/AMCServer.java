@@ -61,7 +61,6 @@ public class AMCServer extends JavaPlugin {
         
         _mysql = new MySQLMain(this);
         checkExternPlugins();
-                
         _protect = new protection(this);
         _logger = new logging(this, _config.debug);
         

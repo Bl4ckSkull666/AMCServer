@@ -21,11 +21,18 @@ public class onLeaveEvent implements Listener {
     
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        _plugin.getPvPCs().savePvPCounter(event.getPlayer().getName());        
+        doYourJob(event.getPlayer().getName());
     }
     
     @EventHandler
     public void onPlayereKick(PlayerKickEvent event) {
-        _plugin.getPvPCs().savePvPCounter(event.getPlayer().getName());
+        doYourJob(event.getPlayer().getName());
+    }
+    
+    private void doYourJob(String p) {
+        _plugin.getPvPCs().savePvPCounter(p);
+        _plugin.getJumps().saveArenas(p);
+        _plugin.getJumps().remArenas(p);
+        _plugin.getPlayerOnlineSince().remove(p);
     }
 }

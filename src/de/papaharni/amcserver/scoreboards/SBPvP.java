@@ -8,6 +8,7 @@ package de.papaharni.amcserver.scoreboards;
 
 import com.pwn9.PwnFilter.util.PointManager;
 import de.papaharni.amcserver.AMCServer;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,6 +22,12 @@ import org.bukkit.scoreboard.Scoreboard;
  */
 public final class SBPvP {
     public static void setScoreboard(Player p) {
+        if(!AMCServer.getInstance().getMyConfig()._sbAvailable.containsKey("pvp"))
+            return;
+        
+        if(!AMCServer.getInstance().getMyConfig()._sbAvailable.get("pvp"))
+            return;
+        
         Scoreboard board = p.getScoreboard();
         if(board == null)
             board = Bukkit.getScoreboardManager().getNewScoreboard();

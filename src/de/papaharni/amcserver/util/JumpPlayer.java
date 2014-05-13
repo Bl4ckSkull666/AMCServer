@@ -25,34 +25,40 @@ public class JumpPlayer {
         _plugin = plugin;
     }
     
-    public JumpArena getArena(Player p, String arena) {
+    public JumpArena getArena(String p, String arena) {
         JumpArena dummy = new JumpArena(arena, 0,0);
-        if(!_playersList.containsKey(p.getName()))
+        if(!_playersList.containsKey(p))
             return dummy;
         
-        for(JumpArena ja: _playersList.get(p.getName())) {
+        for(JumpArena ja: _playersList.get(p)) {
             if(ja.getArena() == arena)
                 return ja;
         }
         return dummy;
     }
     
-    public List<JumpArena> getArenas(Player p) {
+    public List<JumpArena> getArenas(String p) {
         List<JumpArena> dummy = new ArrayList<>();
         
-        if(!_playersList.containsKey(p.getName()))
+        if(!_playersList.containsKey(p))
             return dummy;
         
-        return _playersList.get(p.getName());
+        return _playersList.get(p);
     }
     
-    public void loadArenas(Player p) {
-        _playersList.put(p.getName(), _plugin.getMySQL().getJump().loadArenas(p.getName()));
+    public void loadArenas(String p) {
+        _playersList.put(p, _plugin.getMySQL().getJump().loadArenas(p));
     }
     
-    public void saveArenas(Player p) {
-        if(!_playersList.containsKey(p.getName()))
+    public void saveArenas(String p) {
+        if(!_playersList.containsKey(p))
             return;
-         _plugin.getMySQL().getJump().saveArenas(p.getName(), _playersList.get(p.getName()));
+         _plugin.getMySQL().getJump().saveArenas(p, _playersList.get(p));
+    }
+    
+    public void remArenas(String p) {
+        if(!_playersList.containsKey(p))
+            return;
+        _playersList.remove(p);
     }
 }
